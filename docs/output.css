@@ -539,29 +539,46 @@ video {
 }
 
 .square {
-  background-color:coral;
+  background-color:darkgreen;
   margin-top: 100px;
   border-radius: 10px;
   border-width: 2px;
   border-color: purple;
 }
 
-.row {
+.col {
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
 }
 
 .grid{
   margin: 10px;
   display: flex;
-  flex-direction:column;
+  flex-direction: row;
   justify-content: space-around;
 }
 
-.circle {
+.whiteCircle {
   height: 100px;
   width: 100px;
   background-color: white;
+  border-radius: 40%;
+  margin: 10px;
+}
+
+.yellowCircle {
+  height: 100px;
+  width: 100px;
+  background-color: gold;
+  border-radius: 40%;
+  margin: 10px;
+}
+
+.redCircle {
+  height: 100px;
+  width: 100px;
+  background-color: darkred;
   border-radius: 40%;
   margin: 10px;
 }
