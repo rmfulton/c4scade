@@ -22,12 +22,24 @@ function onClick(x,y) {
 
 function buttonPressed(x,y){
     if (dir == SOUTH){
-        for(let row = HEIGHT - 1; row > -1; --row){
-            if (values[x][row] == 0){
-                updateColor(x,row, COLORS[player], player);
-                player = 3 - player;
-                return;
-            }
+
+        let row = HEIGHT - 1;
+        while (row > -1 && values[x][row] != 0){
+            --row;
+        }
+        if (row > -1){
+            updateColor(x,row,COLORS[player],player);
+            player = 3 - player;
+        }
+    }
+    else if (dir == NORTH){
+        let row = 0;
+        while (row < HEIGHT && values[x][row] != 0){
+            ++row;
+        }
+        if (row < HEIGHT){
+            updateColor(x,row,COLORS[player],player);
+            player = 3 - player;
         }
     }
 }
