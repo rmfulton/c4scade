@@ -598,9 +598,9 @@ video {
 
 .board-container {
   display: flex;
-  justify-content: space-evenly;
   flex-direction: row;
   align-items: center;
+  justify-content: space-evenly;
 }
 
 .centerContents {
