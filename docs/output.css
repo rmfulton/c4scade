@@ -538,9 +538,22 @@ video {
   display: grid;
 }
 
+:root {
+  --tile-width: 70px;
+  --margin-board: 50px;
+}
+
 .square {
   background-color:darkgreen;
-  margin-top: 100px;
+  margin-top: var(--margin-board);
+  border-radius: 10px;
+  border-width: 2px;
+  border-color: purple;
+}
+
+.dirButton {
+  background-color:darkgreen;
+  margin-top: var(--margin-board);
   border-radius: 10px;
   border-width: 2px;
   border-color: purple;
@@ -560,24 +573,24 @@ video {
 }
 
 .whiteCircle {
-  height: 100px;
-  width: 100px;
+  height: var(--tile-width);
+  width: var(--tile-width);
   background-color: white;
   border-radius: 40%;
   margin: 10px;
 }
 
 .yellowCircle {
-  height: 100px;
-  width: 100px;
+  height: var(--tile-width);
+  width: var(--tile-width);
   background-color: gold;
   border-radius: 40%;
   margin: 10px;
 }
 
 .redCircle {
-  height: 100px;
-  width: 100px;
+  height: var(--tile-width);
+  width: var(--tile-width);
   background-color: darkred;
   border-radius: 40%;
   margin: 10px;
@@ -585,13 +598,18 @@ video {
 
 .board-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  flex-direction: row;
   align-items: center;
-  margin-bottom: 50px;
+}
+
+.centerContents {
+  display: flex;
+  justify-content: space-around;
 }
 
 #control-panel {
   display: flex;
   justify-content: space-around;
-  margin: 30px;
+  margin: 10px;
 }

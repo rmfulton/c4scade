@@ -7,6 +7,7 @@ const NE = "NORTHEAST";
 const NW = "NORTHWEST";
 const SE = "SOUTHEAST";
 const SW = "SOUTHWEST";
+const WAIT = 100;
 const WIDTH = 7;
 const HEIGHT = 6;
 
@@ -101,82 +102,62 @@ function translate(dx, dy){
 }
 
 async function moveNorth(){
-    let emptySpace;
+    dir = NORTH
+    const stashPlayer = player;
     for(let i = 0; i < WIDTH; ++i){
-        emptySpace = 0;
-        for(;emptySpace < HEIGHT; ++emptySpace){
-            if (values[i][emptySpace]){
-                break;
+        for(let j = 0; j < HEIGHT; ++j){
+            if(values[i][j]){
+                player = values[i][j];
+                updateColor(i,j,COLORS[0],0);
+                buttonPressed(i,j);
             }
-        }
-        for (let j = emptySpace; j < HEIGHT; ++j){
-            updateColor(i,j-emptySpace,COLORS[values[i][j]], values[i][j]);
-            if (emptySpace){
-                updateColor(i,j,COLORS[0], 0);
-            }
-            await delay(200);
         }
     }
-    dir = NORTH;
+    player = stashPlayer;
 }
 
 async function moveEast(){
-    let emptySpace;
-    for(let j = 0; j < HEIGHT; ++j){
-        emptySpace = 0;
-        for(;emptySpace < WIDTH; ++emptySpace){
-            if (values[WIDTH - 1 - emptySpace][j]){
-                break;
+    dir = EAST;
+    const stashPlayer = player;
+    for(let y = 0; y < HEIGHT; ++y){
+        for (let x = WIDTH - 1; x > -1; --x){
+            if(values[x][y]){
+                player = values[x][y];
+                updateColor(x,y,COLORS[0],0);
+                buttonPressed(x,y);
             }
-        }
-        for (let i = WIDTH - 1 - emptySpace; i > -1; --i){
-            updateColor(i + emptySpace,j,COLORS[values[i][j]], values[i][j]);
-            if (emptySpace){
-                updateColor(i,j,COLORS[0], 0);
-            }
-            await delay(200);
         }
     }
-    dir = EAST;
+    player = stashPlayer;
 }
 
 async function moveSouth(){
-    let emptySpace;
-    for(let i = 0; i < WIDTH; ++i){
-        emptySpace = 0;
-        for(;emptySpace < HEIGHT; ++emptySpace){
-            if (values[i][HEIGHT - 1 - emptySpace]){
-                break;
+    dir = SOUTH
+    const stashPlayer = player;
+    for(let x = 0; x < WIDTH; ++x){
+        for(let y = HEIGHT - 1; y > -1; --y){
+            if(values[x][y]){
+                player = values[x][y];
+                updateColor(x,y,COLORS[0],0);
+                buttonPressed(x,y);
             }
-        }
-        for (let j = HEIGHT - 1 - emptySpace; j > -1; --j){
-            updateColor(i,j+emptySpace,COLORS[values[i][j]], values[i][j]);
-            if (emptySpace){
-                updateColor(i,j,COLORS[0], 0);
-            }
-            await delay(200);
         }
     }
-    dir = SOUTH;
+    player = stashPlayer;
 }
 async function moveWest(){
-    let emptySpace;
+    dir = WEST
+    const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
-        emptySpace = 0;
-        for(;emptySpace < WIDTH; ++emptySpace){
-            if (values[emptySpace][y]){
-                break;
+        for(let x = 0; x < WIDTH; ++x){
+            if(values[x][y]){
+                player = values[x][y];
+                updateColor(x,y,COLORS[0],0);
+                buttonPressed(x,y);
             }
-        }
-        for (let x = emptySpace; x < WIDTH; ++x){
-            updateColor(x - emptySpace,y,COLORS[values[x][y]], values[x][y]);
-            if (emptySpace){
-                updateColor(x,y,COLORS[0], 0);
-            }
-            await delay(200);
         }
     }
-    dir = WEST;
+    player = stashPlayer;
 }
 
 function makeDirButton(direction, callback, parent){
@@ -197,5 +178,4 @@ function addControlPanel(){
 
 document.addEventListener("DOMContentLoaded", function() {
     addButtonsToBoard();
-    addControlPanel();
 });

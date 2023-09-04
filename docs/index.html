@@ -8,11 +8,18 @@
 </head>
 
 <body>
-    <div class="board-container">
+    <div class="centerContents">
+        <button class="dirButton" onclick="moveNorth()">NORTH</button>
+    </div>
+    <span class="board-container">
+        <button class="dirButton" onclick="moveWest()">WEST</button>
         <div class="square">
             <div class="grid">
             </div>
         </div>
+        <button class="dirButton" onclick="moveEast()">EAST</button>
+    </span>
+    <div class="centerContents">
+        <button class="dirButton" onclick="moveSouth()">SOUTH</button>
     </div>
-    <div id="control-panel"></div>
 </body>
