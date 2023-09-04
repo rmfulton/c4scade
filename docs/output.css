@@ -540,12 +540,13 @@ video {
 
 :root {
   --tile-width: 70px;
-  --margin-board: 50px;
+  --margin-board: 20px;
 }
 
 .square {
   background-color:darkgreen;
   margin-top: var(--margin-board);
+  margin-bottom: var(--margin-board);
   border-radius: 10px;
   border-width: 2px;
   border-color: purple;
@@ -553,7 +554,6 @@ video {
 
 .dirButton {
   background-color:darkgreen;
-  margin-top: var(--margin-board);
   border-radius: 10px;
   border-width: 2px;
   border-color: purple;
