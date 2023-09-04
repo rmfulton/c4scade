@@ -607,9 +607,3 @@ video {
   display: flex;
   justify-content: space-around;
 }
-
-#control-panel {
-  display: flex;
-  justify-content: space-around;
-  margin: 10px;
-}

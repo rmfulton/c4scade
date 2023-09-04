@@ -52,6 +52,9 @@ async function moveInDirection(x,y,dx,dy){
         newy = y + dy;
     }
 }
+function min(a,b){
+    return a < b ? a : b;
+}
 
 async function buttonPressed(x,y){
     if (updating){
@@ -76,6 +79,12 @@ async function buttonPressed(x,y){
             x = WIDTH - 1;
             dx = -1;
             break;
+        case SE:
+            let m = min(x,y)
+            x -= m;
+            y -= m;
+            dx = 1;
+            dy = 1;
     }
     if (values[x][y] == 0){
         updateColor(x,y,COLORS[player], player);
@@ -155,13 +164,27 @@ async function moveSouth(){
     player = stashPlayer;
 }
 async function moveWest(){
-    dir = WEST
+    dir = WEST;
     const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
                 player = values[x][y];
                 moveInDirection(x,y,-1,0);
+            }
+        }
+    }
+    player = stashPlayer;
+}
+
+async function moveSE(){
+    dir = SE;
+    const stashPlayer = player;
+    for(let y = HEIGHT-1; y > -1; --y){
+        for(let x = 0; x < WIDTH; ++x){
+            if(values[x][y]){
+                player = values[x][y];
+                moveInDirection(x,y,1,1);
             }
         }
     }
