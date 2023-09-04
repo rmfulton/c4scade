@@ -46,11 +46,15 @@
     border-radius: 40%;
     margin: 10px;
 }
-
-
 .board-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 50px;
+}
+
+#control-panel {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px;
 }

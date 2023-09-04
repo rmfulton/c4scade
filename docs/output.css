@@ -589,3 +589,9 @@ video {
   align-items: center;
   margin-bottom: 50px;
 }
+
+#control-panel {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px;
+}
