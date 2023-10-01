@@ -61,7 +61,7 @@ async function buttonPressed(x,y){
         return;
     }
     updating = true;
-    let dx = 0, dy = 0;
+    let dx = 0, dy = 0, m = 0;
     switch (dir){
         case SOUTH:
             y = 0;
@@ -80,11 +80,20 @@ async function buttonPressed(x,y){
             dx = -1;
             break;
         case SE:
-            let m = min(x,y)
+            m = min(x,y);
             x -= m;
             y -= m;
             dx = 1;
             dy = 1;
+            break;
+        case NW:
+            m = min(WIDTH - 1- x, HEIGHT - 1 - y);
+            x += m;
+            y += m;
+            dx = -1;
+            dy = -1;
+            break;
+
     }
     if (values[x][y] == 0){
         updateColor(x,y,COLORS[player], player);
@@ -191,6 +200,19 @@ async function moveSE(){
     player = stashPlayer;
 }
 
+async function moveNW(){
+    dir = NW;
+    const stashPlayer = player;
+    for(let y = 0; y < HEIGHT; ++y){
+        for(let x = 0; x < WIDTH; ++x){
+            if(values[x][y]){
+                player = values[x][y];
+                moveInDirection(x,y,-1,-1);
+            }
+        }
+    }
+    player = stashPlayer;
+}
 document.addEventListener("DOMContentLoaded", function() {
     addButtonsToBoard();
 });
