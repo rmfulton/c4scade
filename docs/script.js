@@ -93,6 +93,20 @@ async function buttonPressed(x,y){
             dx = -1;
             dy = -1;
             break;
+        case NE:
+            m = min(x, HEIGHT-1-y);
+            x -= m;
+            y += m;
+            dx = 1;
+            dy = -1;
+            break;
+        case SW:
+            m = min(WIDTH - 1-x, y);
+            x += m;
+            y -= m;
+            dx = -1;
+            dy = 1;
+            break;
 
     }
     if (values[x][y] == 0){
@@ -213,6 +227,35 @@ async function moveNW(){
     }
     player = stashPlayer;
 }
+
+async function moveNE(){
+    dir = NE;
+    const stashPlayer = player;
+    for(let y = 0; y < HEIGHT; ++y){
+        for(let x = WIDTH - 1; x > -1; --x){
+            if(values[x][y]){
+                player = values[x][y];
+                moveInDirection(x,y,1,-1);
+            }
+        }
+    }
+    player = stashPlayer;
+}
+
+async function moveSW(){
+    dir = SW;
+    const stashPlayer = player;
+    for(let y = HEIGHT - 1; y > -1; --y){
+        for(let x = 0; x < WIDTH; ++x){
+            if(values[x][y]){
+                player = values[x][y];
+                moveInDirection(x,y,-1,1);
+            }
+        }
+    }
+    player = stashPlayer;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     addButtonsToBoard();
 });
