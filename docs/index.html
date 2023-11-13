@@ -8,22 +8,29 @@
 </head>
 
 <body>
-    <span class="centerContents">
-        <button class="dirButton" onclick="moveNW()">NW</button>
-        <button class="dirButton" onclick="moveNorth()">NORTH</button>
-        <button class="dirButton" onclick="moveNE()">NE</button>
-    </span>
-    <span class="board-container">
-        <button class="dirButton" onclick="moveWest()">WEST</button>
+    <span class="board-and-controls">
+    <div class="board-container">
         <div class="square">
             <div class="grid">
             </div>
         </div>
-        <button class="dirButton" onclick="moveEast()">EAST</button>
-    </span>
-    <div class="centerContents">
-        <button class="dirButton" onClick="moveSW()">SW</button>
-        <button class="dirButton" onclick="moveSouth()">SOUTH</button>
-        <button class="dirButton" onClick="moveSE()">SE</button>
+        <div class="controls">
+            <div class="top-controls">
+                <button class="dirButton" onclick="moveNW()">NW</button>
+                <button class="dirButton" onclick="moveNorth()">NORTH</button>
+                <button class="dirButton" onclick="moveNE()">NE</button>
+            </div>
+            <div class="mid-controls">
+                <button class="dirButton" onclick="moveWest()">West</button>
+                <button class="dirButton" onclick="moveScatter()">Scatter</button>
+                <button class="dirButton" onclick="moveEast()">EAST</button>
+            </div>
+            <div>
+                <button class="dirButton" onClick="moveSW()">SW</button>
+                <button class="dirButton" onclick="moveSouth()">SOUTH</button>
+                <button class="dirButton" onClick="moveSE()">SE</button>
+            </div>
+    
+        </div>
     </div>
 </body>
