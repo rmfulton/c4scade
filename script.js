@@ -172,9 +172,12 @@ function addButtonsToBoard(){
     }
 }
 
-async function move(newDir) {
+async function move(newDir, p) {
     if (!controlsAvailable){
         return;
+    }
+    if (p != player){
+        return
     }
     dir = newDir;
     const stashPlayer = player;
