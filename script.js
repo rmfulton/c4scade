@@ -1,12 +1,12 @@
-const COLORS = ["circle nocolor","circle yellow","circle red"]
-const SOUTH = "SOUTH";
-const NORTH = "NORTH";
-const WEST = "WEST";
-const EAST = "EAST";
-const NE = "NORTHEAST";
-const NW = "NORTHWEST";
-const SE = "SOUTHEAST";
-const SW = "SOUTHWEST";
+const COLORS = ["nocolor","yellow","red"]
+const SOUTH = "S";
+const NORTH = "N";
+const WEST = "W";
+const EAST = "E";
+const NE = "NE";
+const NW = "NW";
+const SE = "SE";
+const SW = "SW";
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
@@ -15,6 +15,7 @@ let updating = false;
 let player = 1;
 let dir = SOUTH;
 let values = [];
+let controlsAvailable = true;
 
 function delay(milliseconds){
     return new Promise(resolve => {setTimeout(resolve, milliseconds);});
@@ -113,6 +114,7 @@ async function buttonPressed(x,y){
         updateColor(x,y,COLORS[player], player);
         await moveInDirection(x,y,dx,dy);
         player = 3 - player;
+        updateControlAvailability(true);
     }
     updating = false;
 }
@@ -122,7 +124,7 @@ function updateColor(x,j,newColor,number){
 
     g = document.getElementsByClassName('grid')[0];
     c = g.children[x];
-    c.children[j].className = newColor;
+    c.children[j].className = 'circle ' + newColor;
 
 }
 
@@ -133,6 +135,22 @@ function reset(){
         }
     }
     dir=SOUTH;
+    player = 1;
+}
+
+function updateControlAvailability(status){
+    colors = ['gray','gray'];
+    if (status){
+        colors[player-1] = 'white';
+    } 
+    for (let i = 0; i < 2; ++i){
+        c = document.getElementsByClassName('controls')[i];
+        buttons = c.children;
+        for(let button of buttons){
+            button.className = "dirButton " + colors[i];
+        }
+        controlsAvailable = status;
+    }
 }
 
 function addButtonsToBoard(){
@@ -145,7 +163,7 @@ function addButtonsToBoard(){
         values.push([])
         for (let j = 0; j < HEIGHT; ++j){
             element = document.createElement("div");
-            element.className =  COLORS[0];
+            element.className =  'circle ' + COLORS[0];
             element.addEventListener("click", onClickBoard(i,j));
             col.appendChild(element);
             values[i].push(0);
@@ -154,9 +172,44 @@ function addButtonsToBoard(){
     }
 }
 
-async function moveNorth(){
-    dir = NORTH
+async function move(newDir) {
+    if (!controlsAvailable){
+        return;
+    }
+    dir = newDir;
     const stashPlayer = player;
+    switch (dir){
+        case SOUTH:
+            await moveSouth();
+            break
+        case NORTH:
+            await moveNorth();
+            break;
+        case EAST:
+            await moveEast()
+            break;
+        case WEST:
+            await moveWest();
+            break;
+        case SE:
+            await moveSE();
+            break;
+        case NW:
+            await moveNW();
+            break;
+        case NE:
+            await moveNE();
+            break;
+        case SW:
+            await moveSW();
+            break;
+
+    }
+    player = stashPlayer;
+    updateControlAvailability(false);
+    highlightDirection(dir);
+}
+async function moveNorth(){
     for(let i = 0; i < WIDTH; ++i){
         for(let j = 0; j < HEIGHT; ++j){
             if(values[i][j]){
@@ -165,15 +218,9 @@ async function moveNorth(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
-
 }
 
 async function moveEast(){
-    dir = EAST;
-    const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
         for (let x = WIDTH - 1; x > -1; --x){
             if(values[x][y]){
@@ -182,14 +229,9 @@ async function moveEast(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 async function moveSouth(){
-    dir = SOUTH
-    const stashPlayer = player;
     for(let x = 0; x < WIDTH; ++x){
         for(let y = HEIGHT - 1; y > -1; --y){
             if(values[x][y]){
@@ -198,13 +240,8 @@ async function moveSouth(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 async function moveWest(){
-    dir = WEST;
-    const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -213,14 +250,9 @@ async function moveWest(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 async function moveSE(){
-    dir = SE;
-    const stashPlayer = player;
     for(let y = HEIGHT-1; y > -1; --y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -229,14 +261,9 @@ async function moveSE(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 async function moveNW(){
-    dir = NW;
-    const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -245,14 +272,9 @@ async function moveNW(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 async function moveNE(){
-    dir = NE;
-    const stashPlayer = player;
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = WIDTH - 1; x > -1; --x){
             if(values[x][y]){
@@ -261,14 +283,9 @@ async function moveNE(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 async function moveSW(){
-    dir = SW;
-    const stashPlayer = player;
     for(let y = HEIGHT - 1; y > -1; --y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -277,9 +294,6 @@ async function moveSW(){
             }
         }
     }
-    player = stashPlayer;
-    highlightControls(player);
-    dimDirection(dir);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
