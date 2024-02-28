@@ -1,14 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
     --tile-width: 70px;
     --margin-board: 20px;
 }
 
+body {
+    background-color:white
+}
+
 .square {
-    background-color:darkgreen;
+    background-color:#2f3034;
     margin-top: var(--margin-board);
     margin-bottom: var(--margin-board);
     border-radius: 10px;
@@ -46,7 +46,7 @@
 .yellowCircle {
     height: var(--tile-width);
     width: var(--tile-width);
-    background-color: gold;
+    background-color: #b981df;
     border-radius: 40%;
     margin: 10px;
 }
@@ -68,4 +68,9 @@
 .centerContents {
     display: flex;
     justify-content: space-around;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
 }

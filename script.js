@@ -131,8 +131,8 @@ function addButtonsToBoard(){
     let col;
     let element;
     for (let i = 0; i < WIDTH; ++i){
-        col = document.createElement('div');
-        col.className = 'col';
+        col = document.createElement('div'); // col = document.getElementsByClassName('col')[i]
+        col.className = 'col';//
         values.push([])
         for (let j = 0; j < HEIGHT; ++j){
             element = document.createElement("button");
