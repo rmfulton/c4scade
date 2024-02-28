@@ -79,6 +79,43 @@ body {
 }
 
 .controls {
+    margin-bottom: 20%;
     display: grid;
     grid-template-columns: auto auto auto;
+}
+
+.controlsAndArrow {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+.south {
+    rotate:0deg;
+}
+.southeast {
+    rotate:315deg;
+}
+
+.east {
+    rotate:270deg;
+}
+
+.northeast {
+    rotate:225deg;
+}
+
+.north {
+    rotate:180deg;
+}
+
+.northwest {
+    rotate:135deg;
+}
+
+.west {
+    rotate:90deg;
+}
+
+.southwest {
+    rotate:45deg;
 }

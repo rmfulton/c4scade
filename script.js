@@ -218,6 +218,7 @@ async function moveNorth(){
             }
         }
     }
+    document.getElementById('arrow').className = 'north';
 }
 
 async function moveEast(){
@@ -229,6 +230,7 @@ async function moveEast(){
             }
         }
     }
+    document.getElementById('arrow').className = 'east';
 }
 
 async function moveSouth(){
@@ -240,6 +242,7 @@ async function moveSouth(){
             }
         }
     }
+    document.getElementById('arrow').className = 'south';
 }
 async function moveWest(){
     for(let y = 0; y < HEIGHT; ++y){
@@ -250,6 +253,7 @@ async function moveWest(){
             }
         }
     }
+    document.getElementById('arrow').className = 'west';
 }
 
 async function moveSE(){
@@ -261,6 +265,7 @@ async function moveSE(){
             }
         }
     }
+    document.getElementById('arrow').className = 'southeast';
 }
 
 async function moveNW(){
@@ -272,6 +277,7 @@ async function moveNW(){
             }
         }
     }
+    document.getElementById('arrow').className = 'northwest';
 }
 
 async function moveNE(){
@@ -283,6 +289,7 @@ async function moveNE(){
             }
         }
     }
+    document.getElementById('arrow').className = 'northeast';
 }
 
 async function moveSW(){
@@ -294,6 +301,7 @@ async function moveSW(){
             }
         }
     }
+    document.getElementById('arrow').className = 'southwest';
 }
 
 document.addEventListener("DOMContentLoaded", function() {

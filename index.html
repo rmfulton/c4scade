@@ -9,33 +9,35 @@
 <body>
     <span class="board-and-controls">
         <div class="board-container">
-            <div class="controls yellow">
-                <button class="dirButton" onclick="move('NW')">NW</button>
-                <button class="dirButton" onclick="move('N')">N </button>
-                <button class="dirButton" onclick="move('NE')">NE</button>
-                <button class="dirButton" onclick="move('W')">W </button>
-                <button class="dirButton" onclick="reset()">Reset </button>
-                <button class="dirButton" onclick="move('E')">E </button>
-                <button class="dirButton" onClick="move('SW')">SW</button>
-                <button class="dirButton" onclick="move('S')">S </button>
-                <button class="dirButton" onClick="move('SE')">SE</button>
-            </div>
 
             <div class="square">
                 <div class="grid">
                 </div>
             </div>
-
-            <div class="controls red">
-                <button class="dirButton" onclick="move('NW')">NW</button>
-                <button class="dirButton" onclick="move('N')">N </button>
-                <button class="dirButton" onclick="move('NE')">NE</button>
-                <button class="dirButton" onclick="move('W')">W </button>
-                <button class="dirButton" onclick="reset()">Reset </button>
-                <button class="dirButton" onclick="move('E')">E </button>
-                <button class="dirButton" onClick="move('SW')">SW</button>
-                <button class="dirButton" onclick="move('S')">S </button>
-                <button class="dirButton" onClick="move('SE')">SE</button>
+            <div class='controlsAndArrow'>
+                <div class="controls yellow">
+                    <button class="dirButton" onclick="move('NW')">NW</button>
+                    <button class="dirButton" onclick="move('N')">N </button>
+                    <button class="dirButton" onclick="move('NE')">NE</button>
+                    <button class="dirButton" onclick="move('W')">W </button>
+                    <button class="dirButton" onclick="reset()">Reset </button>
+                    <button class="dirButton" onclick="move('E')">E </button>
+                    <button class="dirButton" onClick="move('SW')">SW</button>
+                    <button class="dirButton" onclick="move('S')">S </button>
+                    <button class="dirButton" onClick="move('SE')">SE</button>
+                </div>
+                <div class="controls red">
+                    <button class="dirButton" onclick="move('NW')">NW</button>
+                    <button class="dirButton" onclick="move('N')">N </button>
+                    <button class="dirButton" onclick="move('NE')">NE</button>
+                    <button class="dirButton" onclick="move('W')">W </button>
+                    <button class="dirButton" onclick="reset()">Reset </button>
+                    <button class="dirButton" onclick="move('E')">E </button>
+                    <button class="dirButton" onClick="move('SW')">SW</button>
+                    <button class="dirButton" onclick="move('S')">S </button>
+                    <button class="dirButton" onClick="move('SE')">SE</button>
+                </div>
+                <img id='arrow' class='south' src="./arrow-down.png" alt="down-arrow,possibly rotated">
             </div>
         </div>
 </body>
