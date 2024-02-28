@@ -1,4 +1,4 @@
-const COLORS = ["whiteCircle","yellowCircle","redCircle"]
+const COLORS = ["circle nocolor","circle yellow","circle red"]
 const SOUTH = "SOUTH";
 const NORTH = "NORTH";
 const WEST = "WEST";
@@ -7,7 +7,7 @@ const NE = "NORTHEAST";
 const NW = "NORTHWEST";
 const SE = "SOUTHEAST";
 const SW = "SOUTHWEST";
-const WAIT = 50;
+const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
 
@@ -126,16 +126,25 @@ function updateColor(x,j,newColor,number){
 
 }
 
+function reset(){
+    for(let i = 0; i < WIDTH; ++i){
+        for(let j = 0; j < HEIGHT; ++j){
+            updateColor(i,j,COLORS[0],0);
+        }
+    }
+    dir=SOUTH;
+}
+
 function addButtonsToBoard(){
     const g = document.getElementsByClassName('grid')[0];
     let col;
     let element;
     for (let i = 0; i < WIDTH; ++i){
-        col = document.createElement('div'); // col = document.getElementsByClassName('col')[i]
-        col.className = 'col';//
+        col = document.createElement('div');
+        col.className = 'col';
         values.push([])
         for (let j = 0; j < HEIGHT; ++j){
-            element = document.createElement("button");
+            element = document.createElement("div");
             element.className =  COLORS[0];
             element.addEventListener("click", onClickBoard(i,j));
             col.appendChild(element);
@@ -157,6 +166,9 @@ async function moveNorth(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
+
 }
 
 async function moveEast(){
@@ -171,6 +183,8 @@ async function moveEast(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 async function moveSouth(){
@@ -185,6 +199,8 @@ async function moveSouth(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 async function moveWest(){
     dir = WEST;
@@ -198,6 +214,8 @@ async function moveWest(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 async function moveSE(){
@@ -212,6 +230,8 @@ async function moveSE(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 async function moveNW(){
@@ -226,6 +246,8 @@ async function moveNW(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 async function moveNE(){
@@ -240,6 +262,8 @@ async function moveNE(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 async function moveSW(){
@@ -254,6 +278,8 @@ async function moveSW(){
         }
     }
     player = stashPlayer;
+    highlightControls(player);
+    dimDirection(dir);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

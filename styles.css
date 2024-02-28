@@ -1,25 +1,35 @@
 :root {
     --tile-width: 70px;
     --margin-board: 20px;
+    --background-color: rgb(0, 82, 0)
 }
 
 body {
-    background-color:white
+    background-color:var(--background-color)
 }
-
+.yellow {
+    background-color:yellow;
+    border-color:rgb(141, 141, 0);
+}
+.red {
+    background-color: darkred;
+    border-color:rgb(87, 0, 0);
+}
+.nocolor {
+    background-color: var(--background-color);
+    border-color: var(--background-color)
+}
 .square {
-    background-color:#2f3034;
+    background-color:#00158b;
     margin-top: var(--margin-board);
     margin-bottom: var(--margin-board);
     border-radius: 10px;
-    border-width: 2px;
-    border-color: purple;
 }
 .dirButton {
-    background-color:darkgreen;
-    border-radius: 10px;
+    border-radius:  10%;
     border-width: 2px;
-    border-color: purple;
+    font-size:xx-large;
+    margin: 3%
 }
 
 .col {
@@ -35,29 +45,13 @@ body {
     justify-content: space-around;
 
 }
-.whiteCircle {
+.circle {
     height: var(--tile-width);
     width: var(--tile-width);
-    background-color: white;
-    border-radius: 40%;
+    border-radius: 50%;
     margin: 10px;
 }
 
-.yellowCircle {
-    height: var(--tile-width);
-    width: var(--tile-width);
-    background-color: #b981df;
-    border-radius: 40%;
-    margin: 10px;
-}
-
-.redCircle { 
-    height: var(--tile-width);
-    width: var(--tile-width);
-    background-color: darkred;
-    border-radius: 40%;
-    margin: 10px;
-}
 .board-container {
     display: flex;
     flex-direction: row;
@@ -71,6 +65,7 @@ body {
 }
 
 .controls {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    background-color:chocolate;
+    grid-template-columns: auto auto auto;
 }
