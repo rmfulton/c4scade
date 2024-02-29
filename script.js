@@ -32,7 +32,6 @@ function inBounds(x,y){
 }
 
 async function swapColors(x1,y1,x2,y2){
-    console.log(x1,y1,"swap with", x2, y2);
     v1 = values[x1][y1]
     v2 = values[x2][y2]
     updateColor(x1,y1,COLORS[v2],v2);
@@ -41,7 +40,6 @@ async function swapColors(x1,y1,x2,y2){
 }
 
 async function moveInDirection(x,y,dx,dy){
-    console.log(x,y,dx,dy);
     let newx = x + dx;
     let newy = y + dy;
 
@@ -128,7 +126,10 @@ function updateColor(x,j,newColor,number){
 
 }
 
-function reset(){
+function reset(p){
+    if (p != player){
+        return
+    }
     for(let i = 0; i < WIDTH; ++i){
         for(let j = 0; j < HEIGHT; ++j){
             updateColor(i,j,COLORS[0],0);
@@ -136,12 +137,23 @@ function reset(){
     }
     dir=SOUTH;
     player = 1;
+    controls = document.getElementsByClassName('controls');
+    for (let child of controls[0].children){
+        child.className = 'dirButton white';
+    }
+    for(let child of controls[1].children){
+        child.className = 'dirButton gray';
+    }
+    arrow = document.getElementById('arrow');
+    arrow.className = 'south yellow';
 }
 
-function updateControlAvailability(status){
+function updateControlAvailability(boardPressed){
     colors = ['gray','gray'];
-    if (status){
+    if (boardPressed){
         colors[player-1] = 'white';
+        arrow = document.getElementById('arrow');
+        arrow.className = arrow.className.split(' ')[0] + ' ' + COLORS[player];
     } 
     for (let i = 0; i < 2; ++i){
         c = document.getElementsByClassName('controls')[i];
@@ -149,9 +161,10 @@ function updateControlAvailability(status){
         for(let button of buttons){
             button.className = "dirButton " + colors[i];
         }
-        controlsAvailable = status;
+        controlsAvailable = boardPressed;
     }
 }
+
 
 function addButtonsToBoard(){
     const g = document.getElementsByClassName('grid')[0];
@@ -210,9 +223,9 @@ async function move(newDir, p) {
     }
     player = stashPlayer;
     updateControlAvailability(false);
-    highlightDirection(dir);
 }
 async function moveNorth(){
+    document.getElementById('arrow').className = 'north ' + COLORS[player];
     for(let i = 0; i < WIDTH; ++i){
         for(let j = 0; j < HEIGHT; ++j){
             if(values[i][j]){
@@ -221,10 +234,10 @@ async function moveNorth(){
             }
         }
     }
-    document.getElementById('arrow').className = 'north';
 }
 
 async function moveEast(){
+    document.getElementById('arrow').className = 'east ' + COLORS[player];
     for(let y = 0; y < HEIGHT; ++y){
         for (let x = WIDTH - 1; x > -1; --x){
             if(values[x][y]){
@@ -233,10 +246,10 @@ async function moveEast(){
             }
         }
     }
-    document.getElementById('arrow').className = 'east';
 }
 
 async function moveSouth(){
+    document.getElementById('arrow').className = 'south ' + COLORS[player];
     for(let x = 0; x < WIDTH; ++x){
         for(let y = HEIGHT - 1; y > -1; --y){
             if(values[x][y]){
@@ -245,9 +258,9 @@ async function moveSouth(){
             }
         }
     }
-    document.getElementById('arrow').className = 'south';
 }
 async function moveWest(){
+    document.getElementById('arrow').className = 'west ' + COLORS[player];
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -256,10 +269,10 @@ async function moveWest(){
             }
         }
     }
-    document.getElementById('arrow').className = 'west';
 }
 
 async function moveSE(){
+    document.getElementById('arrow').className = 'southeast ' + COLORS[player];
     for(let y = HEIGHT-1; y > -1; --y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -268,10 +281,10 @@ async function moveSE(){
             }
         }
     }
-    document.getElementById('arrow').className = 'southeast';
 }
 
 async function moveNW(){
+    document.getElementById('arrow').className = 'northwest ' + COLORS[player];
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -280,10 +293,10 @@ async function moveNW(){
             }
         }
     }
-    document.getElementById('arrow').className = 'northwest';
 }
 
 async function moveNE(){
+    document.getElementById('arrow').className = 'northeast ' + COLORS[player];
     for(let y = 0; y < HEIGHT; ++y){
         for(let x = WIDTH - 1; x > -1; --x){
             if(values[x][y]){
@@ -292,10 +305,10 @@ async function moveNE(){
             }
         }
     }
-    document.getElementById('arrow').className = 'northeast';
 }
 
 async function moveSW(){
+    document.getElementById('arrow').className = 'southwest ' + COLORS[player];
     for(let y = HEIGHT - 1; y > -1; --y){
         for(let x = 0; x < WIDTH; ++x){
             if(values[x][y]){
@@ -304,7 +317,6 @@ async function moveSW(){
             }
         }
     }
-    document.getElementById('arrow').className = 'southwest';
 }
 
 document.addEventListener("DOMContentLoaded", function() {

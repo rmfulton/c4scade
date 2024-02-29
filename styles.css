@@ -91,31 +91,39 @@ body {
 }
 .south {
     rotate:0deg;
+    border-radius:50%;
 }
 .southeast {
     rotate:315deg;
+    border-radius:50%;
 }
 
 .east {
     rotate:270deg;
+    border-radius:50%;
 }
 
 .northeast {
     rotate:225deg;
+    border-radius:50%;
 }
 
 .north {
     rotate:180deg;
+    border-radius:50%;
 }
 
 .northwest {
     rotate:135deg;
+    border-radius:50%;
 }
 
 .west {
     rotate:90deg;
+    border-radius:50%;
 }
 
 .southwest {
     rotate:45deg;
+    border-radius:50%;
 }
