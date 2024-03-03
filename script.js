@@ -225,6 +225,15 @@ async function moveTowards() {
 
 }
 
+async function animateRotation(element, angle,time=2){
+    wait = time/angle;console.log(element.style);
+    base =  '';
+    for (let i = 1; i < angle+1; ++i){
+        element.style = base + "rotate:" + i  + "deg;";
+        await delay(wait);
+    }
+console.log("DONE: " + angle);
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     addButtonsToBoard();

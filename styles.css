@@ -90,39 +90,31 @@ body {
 }
 .S {
     rotate:0deg;
-    border-radius:50%;
 }
 .SE {
     rotate:315deg;
-    border-radius:50%;
 }
 
 .E {
     rotate:270deg;
-    border-radius:50%;
 }
 
 .NE {
     rotate:225deg;
-    border-radius:50%;
 }
 
 .N {
     rotate:180deg;
-    border-radius:50%;
 }
 
 .NW {
     rotate:135deg;
-    border-radius:50%;
 }
 
 .W {
     rotate:90deg;
-    border-radius:50%;
 }
 
 .SW {
     rotate:45deg;
-    border-radius:50%;
 }
