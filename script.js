@@ -7,6 +7,7 @@ const NE = "NE";
 const NW = "NW";
 const SE = "SE";
 const SW = "SW";
+DIR2DELTA = {'N': [0,-1], 'S': [0,1], 'E': [1,0], 'W': [-1,0], 'NW': [-1,-1], 'SW':[-1,1], 'SE': [1,1], 'NE': [1,-1]}
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
@@ -145,7 +146,7 @@ function reset(p){
         child.className = 'dirButton gray';
     }
     arrow = document.getElementById('arrow');
-    arrow.className = 'south yellow';
+    arrow.className = 'S yellow';
     controlsAvailable = true;
 }
 
@@ -171,7 +172,6 @@ function updateControlAvailability(boardPressed){
         controlsAvailable = boardPressed;
     }
 }
-
 
 function addButtonsToBoard(){
     const g = document.getElementsByClassName('grid')[0];
@@ -201,130 +201,30 @@ async function move(newDir, p) {
     }
     dir = newDir;
     const stashPlayer = player;
-    switch (dir){
-        case SOUTH:
-            await moveSouth();
-            break
-        case NORTH:
-            await moveNorth();
-            break;
-        case EAST:
-            await moveEast()
-            break;
-        case WEST:
-            await moveWest();
-            break;
-        case SE:
-            await moveSE();
-            break;
-        case NW:
-            await moveNW();
-            break;
-        case NE:
-            await moveNE();
-            break;
-        case SW:
-            await moveSW();
-            break;
+    await moveTowards();
 
-    }
     player = stashPlayer;
     updateControlAvailability(false);
 }
-async function moveNorth(){
-    document.getElementById('arrow').className = 'north ' + COLORS[player];
-    for(let i = 0; i < WIDTH; ++i){
-        for(let j = 0; j < HEIGHT; ++j){
+async function moveTowards() {
+    dx = DIR2DELTA[dir][0];
+    dy = DIR2DELTA[dir][1];
+    xStart = dx == 1 ? WIDTH-1 : 0;
+    yStart = dy == 1 ? HEIGHT-1: 0;
+    xdelta = dx == 1 ? -1: 1;
+    ydelta = dy == 1 ? -1: 1;
+    document.getElementById('arrow').className = dir + ' ' + COLORS[player];
+    for (let i = xStart; i*xdelta < WIDTH - xStart; i += xdelta){
+        for (let j = yStart; j*ydelta < HEIGHT - yStart; j += ydelta){
             if(values[i][j]){
                 player = values[i][j];
-                moveInDirection(i,j,0,-1);
+                moveInDirection(i,j,dx,dy);
             }
         }
     }
+
 }
 
-async function moveEast(){
-    document.getElementById('arrow').className = 'east ' + COLORS[player];
-    for(let y = 0; y < HEIGHT; ++y){
-        for (let x = WIDTH - 1; x > -1; --x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,1,0);
-            }
-        }
-    }
-}
-
-async function moveSouth(){
-    document.getElementById('arrow').className = 'south ' + COLORS[player];
-    for(let x = 0; x < WIDTH; ++x){
-        for(let y = HEIGHT - 1; y > -1; --y){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,0,1);
-            }
-        }
-    }
-}
-async function moveWest(){
-    document.getElementById('arrow').className = 'west ' + COLORS[player];
-    for(let y = 0; y < HEIGHT; ++y){
-        for(let x = 0; x < WIDTH; ++x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,-1,0);
-            }
-        }
-    }
-}
-
-async function moveSE(){
-    document.getElementById('arrow').className = 'southeast ' + COLORS[player];
-    for(let y = HEIGHT-1; y > -1; --y){
-        for(let x = 0; x < WIDTH; ++x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,1,1);
-            }
-        }
-    }
-}
-
-async function moveNW(){
-    document.getElementById('arrow').className = 'northwest ' + COLORS[player];
-    for(let y = 0; y < HEIGHT; ++y){
-        for(let x = 0; x < WIDTH; ++x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,-1,-1);
-            }
-        }
-    }
-}
-
-async function moveNE(){
-    document.getElementById('arrow').className = 'northeast ' + COLORS[player];
-    for(let y = 0; y < HEIGHT; ++y){
-        for(let x = WIDTH - 1; x > -1; --x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,1,-1);
-            }
-        }
-    }
-}
-
-async function moveSW(){
-    document.getElementById('arrow').className = 'southwest ' + COLORS[player];
-    for(let y = HEIGHT - 1; y > -1; --y){
-        for(let x = 0; x < WIDTH; ++x){
-            if(values[x][y]){
-                player = values[x][y];
-                moveInDirection(x,y,-1,1);
-            }
-        }
-    }
-}
 
 document.addEventListener("DOMContentLoaded", function() {
     addButtonsToBoard();

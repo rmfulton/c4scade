@@ -88,41 +88,41 @@ body {
     flex-direction:column;
     align-items: center;
 }
-.south {
+.S {
     rotate:0deg;
     border-radius:50%;
 }
-.southeast {
+.SE {
     rotate:315deg;
     border-radius:50%;
 }
 
-.east {
+.E {
     rotate:270deg;
     border-radius:50%;
 }
 
-.northeast {
+.NE {
     rotate:225deg;
     border-radius:50%;
 }
 
-.north {
+.N {
     rotate:180deg;
     border-radius:50%;
 }
 
-.northwest {
+.NW {
     rotate:135deg;
     border-radius:50%;
 }
 
-.west {
+.W {
     rotate:90deg;
     border-radius:50%;
 }
 
-.southwest {
+.SW {
     rotate:45deg;
     border-radius:50%;
 }
