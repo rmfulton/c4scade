@@ -1,19 +1,21 @@
 :root {
     --tile-width: 70px;
     --margin-board: 20px;
-    --background-color: rgb(0, 82, 0)
+    --green: #2c792c;
+    --light-yellow: #FFD23F;
+    --light-red: #be362c;
+    --background-color: var(--green);
+    --light-blue: #239bfb;
 }
 
 body {
     background-color:var(--background-color)
 }
 .yellow {
-    background-color:yellow;
-    border-color:rgb(141, 141, 0);
+    background-color:var(--light-yellow);
 }
 .red {
-    background-color: darkred;
-    border-color:rgb(87, 0, 0);
+    background-color: var(--light-red);
 }
 .nocolor {
     background-color: var(--background-color);
@@ -28,12 +30,9 @@ body {
     background-color:gray;
 }
 
-.last {
-    background-color:darkkhaki;
-}
 
 .square {
-    background-color:#00158b;
+    background-color:var(--light-blue);
     margin-top: var(--margin-board);
     margin-bottom: var(--margin-board);
     border-radius: 10px;

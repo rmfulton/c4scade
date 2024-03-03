@@ -146,6 +146,7 @@ function reset(p){
     }
     arrow = document.getElementById('arrow');
     arrow.className = 'south yellow';
+    controlsAvailable = true;
 }
 
 function updateControlAvailability(boardPressed){
@@ -158,8 +159,14 @@ function updateControlAvailability(boardPressed){
     for (let i = 0; i < 2; ++i){
         c = document.getElementsByClassName('controls')[i];
         buttons = c.children;
-        for(let button of buttons){
+        for(let j = 0; j < 9; ++j){
+
+            button = buttons[j]
             button.className = "dirButton " + colors[i];
+            resetIndex = 4;
+            if (j == resetIndex && !boardPressed && i == player-1){
+                button.className = "dirButton white";
+            }
         }
         controlsAvailable = boardPressed;
     }
