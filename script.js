@@ -8,6 +8,7 @@ const NW = "NW";
 const SE = "SE";
 const SW = "SW";
 DIR2DELTA = {'N': [0,-1], 'S': [0,1], 'E': [1,0], 'W': [-1,0], 'NW': [-1,-1], 'SW':[-1,1], 'SE': [1,1], 'NE': [1,-1]}
+DIR2ROT = {'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315}
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
@@ -145,8 +146,6 @@ function reset(p){
     for(let child of controls[1].children){
         child.className = 'dirButton gray';
     }
-    arrow = document.getElementById('arrow');
-    arrow.className = 'S yellow';
     controlsAvailable = true;
 }
 
@@ -154,8 +153,6 @@ function updateControlAvailability(boardPressed){
     colors = ['gray','gray'];
     if (boardPressed){
         colors[player-1] = 'white';
-        arrow = document.getElementById('arrow');
-        arrow.className = arrow.className.split(' ')[0] + ' ' + COLORS[player];
     } 
     for (let i = 0; i < 2; ++i){
         c = document.getElementsByClassName('controls')[i];
@@ -200,11 +197,12 @@ async function move(newDir, p) {
         return
     }
     dir = newDir;
+    updateControlAvailability(false);
+    await rotateAllTo(DIR2ROT[newDir]);
     const stashPlayer = player;
     await moveTowards();
 
     player = stashPlayer;
-    updateControlAvailability(false);
 }
 async function moveTowards() {
     dx = DIR2DELTA[dir][0];
@@ -213,7 +211,6 @@ async function moveTowards() {
     yStart = dy == 1 ? HEIGHT-1: 0;
     xdelta = dx == 1 ? -1: 1;
     ydelta = dy == 1 ? -1: 1;
-    document.getElementById('arrow').className = dir + ' ' + COLORS[player];
     for (let i = xStart; i*xdelta < WIDTH - xStart; i += xdelta){
         for (let j = yStart; j*ydelta < HEIGHT - yStart; j += ydelta){
             if(values[i][j]){
@@ -224,15 +221,37 @@ async function moveTowards() {
     }
 
 }
-
-async function animateRotation(element, angle,time=2){
-    wait = time/angle;console.log(element.style);
-    base =  '';
-    for (let i = 1; i < angle+1; ++i){
-        element.style = base + "rotate:" + i  + "deg;";
+/*
+Expects positive inputs
+*/
+async function animateRotation(element, rotate,time=0.5){
+    delta = 1;
+    if (rotate > 180){
+        rotate = rotate - 360;
+        delta = -1;
+    }
+    wait = time*1000/Math.abs(rotate);
+    rot = element.style.rotate;
+    initialAngle = Number( rot.slice(0,rot.length - 3))
+    let angle = initialAngle;
+    while (angle != initialAngle + rotate){
+        angle += delta
+        x = angle % 360;
+        element.style = "rotate:" + x  + "deg;";
         await delay(wait);
     }
-console.log("DONE: " + angle);
+}
+
+async function rotateAllTo(angle, time=1){
+    b = document.getElementsByClassName('square')[0];
+    cy = document.getElementsByClassName('controls yellow')[0];
+    cr = document.getElementsByClassName('controls red')[0];
+    rot = b.style.rotate;
+    initialAngle = Number( rot.slice(0,rot.length - 3));
+    d_angle = (360 + angle - initialAngle) % 360;
+    animateRotation(b, d_angle, time);
+    animateRotation(cy, d_angle, time);
+    await animateRotation(cr, d_angle, time)
 }
 
 document.addEventListener("DOMContentLoaded", function() {

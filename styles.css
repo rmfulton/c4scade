@@ -1,6 +1,6 @@
 :root {
-    --tile-width: 70px;
-    --margin-board: 20px;
+    --tile-width: 55px;
+    --margin-board: 120px;
     --green: #2c792c;
     --light-yellow: #FFD23F;
     --light-red: #be362c;
@@ -78,7 +78,7 @@ body {
 }
 
 .controls {
-    margin-bottom: 20%;
+    margin: 20%;
     display: grid;
     grid-template-columns: auto auto auto;
 }
