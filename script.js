@@ -141,10 +141,10 @@ function reset(p){
     player = 1;
     controls = document.getElementsByClassName('controls');
     for (let child of controls[0].children){
-        child.className = 'dirButton white';
+        child.className = 'arrow white';
     }
     for(let child of controls[1].children){
-        child.className = 'dirButton gray';
+        child.className = 'arrow gray';
     }
     indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
@@ -165,10 +165,10 @@ function updateControlAvailability(boardPressed){
         for(let j = 0; j < 9; ++j){
 
             button = buttons[j]
-            button.className = "dirButton " + colors[i];
+            button.className = "arrow " + colors[i];
             resetIndex = 4;
             if (j == resetIndex && !boardPressed && i == player-1){
-                button.className = "dirButton white";
+                button.className = "arrow white";
             }
         }
         controlsAvailable = boardPressed;

@@ -16,26 +16,30 @@
             </div>
             <div class='controlsAndArrow'>
                 <div class="controls yellow">
-                    <button class="dirButton white" onclick="move('NW',1)">NW</button>
-                    <button class="dirButton white" onclick="move('N',1)">N </button>
-                    <button class="dirButton white" onclick="move('NE',1)">NE</button>
-                    <button class="dirButton white" onclick="move('W',1)">W </button>
-                    <img src="./arrow-rotate.svg" class="dirButton white" onclick="reset(1)"> </img>
-                    <button class="dirButton white" onclick="move('E',1)">E </button>
-                    <button class="dirButton white" onClick="move('SW',1)">SW</button>
-                    <button class="dirButton white" onclick="move('S',1)">S </button>
-                    <button class="dirButton white" onClick="move('SE',1)">SE</button>
+                    <img src="arrow-right.svg" style="rotate:225deg" class="arrow white" onclick="move('NW',1)"></img>
+                    <img src="arrow-right.svg" style="rotate:270deg" class="arrow white" onclick="move('N',1)"> </img>
+                    <img src="arrow-right.svg" style="rotate:315deg" class="arrow white" onclick="move('NE',1)"></img>
+                    <img src="arrow-right.svg" style="rotate:180deg" class="arrow white" onclick="move('W',1)"></img>
+                    <div id= "center1" class="arrow white" onclick="reset(1)">
+                        <img class='rotate' src="./arrow-rotate.svg"></img>
+                    </div>
+                    <img src="arrow-right.svg"  class="arrow white" onclick="move('E',1)"></img>
+                    <img src="arrow-right.svg" style="rotate:135deg" class="arrow white" onClick="move('SW',1)"></img>
+                    <img src="arrow-right.svg" style="rotate:90deg"  class="arrow white" onclick="move('S',1)"> </img>
+                    <img src="arrow-right.svg" style="rotate:45deg" class="arrow white" onClick="move('SE',1)"></img>
                 </div>
                 <div class="controls red">
-                    <button class="dirButton gray" onclick="move('NW',2)">NW</button>
-                    <button class="dirButton gray" onclick="move('N',2)">N </button>
-                    <button class="dirButton gray" onclick="move('NE',2)">NE</button>
-                    <button class="dirButton gray" onclick="move('W',2)">W </button>
-                    <img  src="./arrow-rotate.svg" class="dirButton gray" onclick="reset(2)"> </img>
-                    <button class="dirButton gray" onclick="move('E',2)">E </button>
-                    <button class="dirButton gray" onClick="move('SW',2)">SW</button>
-                    <button class="dirButton gray" onclick="move('S',2)">S </button>
-                    <button class="dirButton gray" onClick="move('SE',2)">SE</button>
+                    <img src="arrow-right.svg" style="rotate:225deg" class="arrow gray" onclick="move('NW',2)"></img>
+                    <img src="arrow-right.svg" style="rotate:270deg" class="arrow gray" onclick="move('N',2)"> </img>
+                    <img src="arrow-right.svg" style="rotate:315deg" class="arrow gray" onclick="move('NE',2)"></img>
+                    <img src="arrow-right.svg" style="rotate:180deg" class="arrow gray" onclick="move('W',2)"></img>
+                    <div id= "center2" class="arrow gray" onclick="reset(2)">
+                        <img class='rotate' src="./arrow-rotate.svg"></img>
+                    </div>
+                    <img src="arrow-right.svg"  class="arrow gray" onclick="move('E',2)"></img>
+                    <img src="arrow-right.svg" style="rotate:135deg" class="arrow gray" onClick="move('SW',2)"></img>
+                    <img src="arrow-right.svg" style="rotate:90deg"  class="arrow gray" onclick="move('S',2)"> </img>
+                    <img src="arrow-right.svg" style="rotate:45deg" class="arrow gray" onClick="move('SE',2)"></img>
                 </div>
             </div>
             <div class='turn-indicator'>
