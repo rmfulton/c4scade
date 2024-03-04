@@ -225,6 +225,40 @@ async function moveTowards() {
 
 }
 
+function isGameOver(){
+    byVert = wonByTower();
+    byHoriz = wonByWall();
+    byDiag = wonByDiag(); 
+
+}
+
+function wonByTower(){
+    i = 0;
+    let winners = [];
+    for(let i = 0; i < WIDTH; ++i){
+        j = 0;
+        while (j < HEIGHT - 4){
+            v = values[i][j];
+            if (v == 0){
+                continue;
+            }
+            let allEqual = true;
+            for (let k = 1; k < 4; ++k){
+                if (v != values[i][j+k]) {
+                    j += k
+                    allEqual = false;
+                    break;
+                }
+            }
+            if (allEqual && !(v  in winners)){
+                winners.push(v);
+            }
+            j += 4;
+        }
+    }
+    return winners;
+}
+
 async function animateRotation(element, angle,time=2){
     wait = time/angle;console.log(element.style);
     base =  '';
