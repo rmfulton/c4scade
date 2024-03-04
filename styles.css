@@ -88,6 +88,13 @@ body {
     flex-direction:column;
     align-items: center;
 }
+
+.turn-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .S {
     rotate:0deg;
 }

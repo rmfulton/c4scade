@@ -146,13 +146,18 @@ function reset(p){
     for(let child of controls[1].children){
         child.className = 'dirButton gray';
     }
+    indicator = document.getElementById('indicator');
+    indicator.className = 'circle yellow';
     controlsAvailable = true;
+    rotateAllTo(0,0)
 }
 
 function updateControlAvailability(boardPressed){
     colors = ['gray','gray'];
     if (boardPressed){
         colors[player-1] = 'white';
+        indicator = document.getElementById('indicator');
+        indicator.className =  'circle ' + COLORS[player];
     } 
     for (let i = 0; i < 2; ++i){
         c = document.getElementsByClassName('controls')[i];
