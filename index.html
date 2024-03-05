@@ -15,36 +15,23 @@
                 </div>
             </div>
             <div class='controlsAndArrow'>
+                <div class='turn-indicator'>
+                    <h1 font-family:sans-serif>Player Turn</h1>
+                    <div id="indicator" class='circle yellow'></div>
+                </div>
                 <div class="controls yellow">
-                    <img src="arrow-right.svg" style="rotate:225deg" class="arrow white" onclick="move('NW',1)"></img>
-                    <img src="arrow-right.svg" style="rotate:270deg" class="arrow white" onclick="move('N',1)"> </img>
-                    <img src="arrow-right.svg" style="rotate:315deg" class="arrow white" onclick="move('NE',1)"></img>
-                    <img src="arrow-right.svg" style="rotate:180deg" class="arrow white" onclick="move('W',1)"></img>
-                    <div id= "center1" class="arrow white" onclick="reset(1)">
+                    <img src="arrow-right.svg" style="rotate:225deg" class="arrow white" onclick="move('NW')"></img>
+                    <img src="arrow-right.svg" style="rotate:270deg" class="arrow white" onclick="move('N')"> </img>
+                    <img src="arrow-right.svg" style="rotate:315deg" class="arrow white" onclick="move('NE')"></img>
+                    <img src="arrow-right.svg" style="rotate:180deg" class="arrow white" onclick="move('W')"></img>
+                    <div id= "center1" class="arrow white" onclick="reset()">
                         <img class='rotate' src="./arrow-rotate.svg"></img>
                     </div>
-                    <img src="arrow-right.svg"  class="arrow white" onclick="move('E',1)"></img>
-                    <img src="arrow-right.svg" style="rotate:135deg" class="arrow white" onClick="move('SW',1)"></img>
-                    <img src="arrow-right.svg" style="rotate:90deg"  class="arrow white" onclick="move('S',1)"> </img>
-                    <img src="arrow-right.svg" style="rotate:45deg" class="arrow white" onClick="move('SE',1)"></img>
+                    <img src="arrow-right.svg"  class="arrow white" onclick="move('E')"></img>
+                    <img src="arrow-right.svg" style="rotate:135deg" class="arrow white" onClick="move('SW')"></img>
+                    <img src="arrow-right.svg" style="rotate:90deg"  class="arrow white" onclick="move('S')"> </img>
+                    <img src="arrow-right.svg" style="rotate:45deg" class="arrow white" onClick="move('SE')"></img>
                 </div>
-                <div class="controls red">
-                    <img src="arrow-right.svg" style="rotate:225deg" class="arrow gray" onclick="move('NW',2)"></img>
-                    <img src="arrow-right.svg" style="rotate:270deg" class="arrow gray" onclick="move('N',2)"> </img>
-                    <img src="arrow-right.svg" style="rotate:315deg" class="arrow gray" onclick="move('NE',2)"></img>
-                    <img src="arrow-right.svg" style="rotate:180deg" class="arrow gray" onclick="move('W',2)"></img>
-                    <div id= "center2" class="arrow gray" onclick="reset(2)">
-                        <img class='rotate' src="./arrow-rotate.svg"></img>
-                    </div>
-                    <img src="arrow-right.svg"  class="arrow gray" onclick="move('E',2)"></img>
-                    <img src="arrow-right.svg" style="rotate:135deg" class="arrow gray" onClick="move('SW',2)"></img>
-                    <img src="arrow-right.svg" style="rotate:90deg"  class="arrow gray" onclick="move('S',2)"> </img>
-                    <img src="arrow-right.svg" style="rotate:45deg" class="arrow gray" onClick="move('SE',2)"></img>
-                </div>
-            </div>
-            <div class='turn-indicator'>
-                <h1>Player Turn</h1>
-                <div id="indicator" class='circle yellow'></div>
             </div>
         </div>
 </body>

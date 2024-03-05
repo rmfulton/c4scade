@@ -8,6 +8,10 @@
     --light-blue: #239bfb;
 }
 
+h1 {
+    font-family: sans-serif;
+}
+
 body {
     background-color:var(--background-color)
 }

@@ -128,10 +128,7 @@ function updateColor(x,j,newColor,number){
 
 }
 
-function reset(p){
-    if (p != player){
-        return
-    }
+function reset(){
     for(let i = 0; i < WIDTH; ++i){
         for(let j = 0; j < HEIGHT; ++j){
             updateColor(i,j,COLORS[0],0);
@@ -140,11 +137,9 @@ function reset(p){
     dir=SOUTH;
     player = 1;
     controls = document.getElementsByClassName('controls');
+    controls.className = 'controls yellow';
     for (let child of controls[0].children){
         child.className = 'arrow white';
-    }
-    for(let child of controls[1].children){
-        child.className = 'arrow gray';
     }
     indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
@@ -153,26 +148,25 @@ function reset(p){
 }
 
 function updateControlAvailability(boardPressed){
-    colors = ['gray','gray'];
+    shading = 'gray'
     if (boardPressed){
-        colors[player-1] = 'white';
+        shading = 'white';
         indicator = document.getElementById('indicator');
         indicator.className =  'circle ' + COLORS[player];
     } 
-    for (let i = 0; i < 2; ++i){
-        c = document.getElementsByClassName('controls')[i];
-        buttons = c.children;
-        for(let j = 0; j < 9; ++j){
+    c = document.getElementsByClassName('controls')[0];
+    c.className = 'controls ' + COLORS[player];
+    buttons = c.children;
+    for(let j = 0; j < 9; ++j){
 
-            button = buttons[j]
-            button.className = "arrow " + colors[i];
-            resetIndex = 4;
-            if (j == resetIndex && !boardPressed && i == player-1){
-                button.className = "arrow white";
-            }
+        button = buttons[j]
+        button.className = "arrow " + shading;
+        resetIndex = 4;
+        if (j == resetIndex && !boardPressed){
+            button.className = "arrow white";
         }
-        controlsAvailable = boardPressed;
     }
+    controlsAvailable = boardPressed;
 }
 
 function addButtonsToBoard(){
@@ -194,12 +188,9 @@ function addButtonsToBoard(){
     }
 }
 
-async function move(newDir, p) {
+async function move(newDir) {
     if (!controlsAvailable){
         return;
-    }
-    if (p != player){
-        return
     }
     dir = newDir;
     updateControlAvailability(false);
@@ -249,14 +240,12 @@ async function animateRotation(element, rotate,time=0.5){
 
 async function rotateAllTo(angle, time=1){
     b = document.getElementsByClassName('square')[0];
-    cy = document.getElementsByClassName('controls yellow')[0];
-    cr = document.getElementsByClassName('controls red')[0];
+    c = document.getElementsByClassName('controls')[0];
     rot = b.style.rotate;
     initialAngle = Number( rot.slice(0,rot.length - 3));
     d_angle = (360 + angle - initialAngle) % 360;
     animateRotation(b, d_angle, time);
-    animateRotation(cy, d_angle, time);
-    await animateRotation(cr, d_angle, time)
+    await animateRotation(c, d_angle, time);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
