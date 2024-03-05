@@ -136,9 +136,9 @@ function reset(){
     }
     dir=SOUTH;
     player = 1;
-    controls = document.getElementsByClassName('controls');
+    controls = document.getElementsByClassName('controls')[0];
     controls.className = 'controls yellow';
-    for (let child of controls[0].children){
+    for (let child of controls.children){
         child.className = 'arrow white';
     }
     indicator = document.getElementById('indicator');
