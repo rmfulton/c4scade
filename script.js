@@ -233,6 +233,7 @@ function wonByTower(){
         while (j < HEIGHT - 4){
             v = values[i][j];
             if (v == 0){
+                j += 1;
                 continue;
             }
             let allEqual = true;
