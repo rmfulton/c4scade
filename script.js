@@ -8,6 +8,7 @@ const NW = "NW";
 const SE = "SE";
 const SW = "SW";
 DIR2DELTA = {'N': [0,-1], 'S': [0,1], 'E': [1,0], 'W': [-1,0], 'NW': [-1,-1], 'SW':[-1,1], 'SE': [1,1], 'NE': [1,-1]}
+DIR2ROT = {'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315}
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
@@ -127,10 +128,7 @@ function updateColor(x,j,newColor,number){
 
 }
 
-function reset(p){
-    if (p != player){
-        return
-    }
+function reset(){
     for(let i = 0; i < WIDTH; ++i){
         for(let j = 0; j < HEIGHT; ++j){
             updateColor(i,j,COLORS[0],0);
@@ -138,39 +136,37 @@ function reset(p){
     }
     dir=SOUTH;
     player = 1;
-    controls = document.getElementsByClassName('controls');
-    for (let child of controls[0].children){
-        child.className = 'dirButton white';
+    controls = document.getElementsByClassName('controls')[0];
+    controls.className = 'controls yellow';
+    for (let child of controls.children){
+        child.className = 'arrow white';
     }
-    for(let child of controls[1].children){
-        child.className = 'dirButton gray';
-    }
-    arrow = document.getElementById('arrow');
-    arrow.className = 'S yellow';
+    indicator = document.getElementById('indicator');
+    indicator.className = 'circle yellow';
     controlsAvailable = true;
+    rotateAllTo(0,0)
 }
 
 function updateControlAvailability(boardPressed){
-    colors = ['gray','gray'];
+    shading = 'gray'
     if (boardPressed){
-        colors[player-1] = 'white';
-        arrow = document.getElementById('arrow');
-        arrow.className = arrow.className.split(' ')[0] + ' ' + COLORS[player];
+        shading = 'white';
+        indicator = document.getElementById('indicator');
+        indicator.className =  'circle ' + COLORS[player];
     } 
-    for (let i = 0; i < 2; ++i){
-        c = document.getElementsByClassName('controls')[i];
-        buttons = c.children;
-        for(let j = 0; j < 9; ++j){
+    c = document.getElementsByClassName('controls')[0];
+    c.className = 'controls ' + COLORS[player];
+    buttons = c.children;
+    for(let j = 0; j < 9; ++j){
 
-            button = buttons[j]
-            button.className = "dirButton " + colors[i];
-            resetIndex = 4;
-            if (j == resetIndex && !boardPressed && i == player-1){
-                button.className = "dirButton white";
-            }
+        button = buttons[j]
+        button.className = "arrow " + shading;
+        resetIndex = 4;
+        if (j == resetIndex && !boardPressed){
+            button.className = "arrow white";
         }
-        controlsAvailable = boardPressed;
     }
+    controlsAvailable = boardPressed;
 }
 
 function addButtonsToBoard(){
@@ -192,19 +188,17 @@ function addButtonsToBoard(){
     }
 }
 
-async function move(newDir, p) {
+async function move(newDir) {
     if (!controlsAvailable){
         return;
     }
-    if (p != player){
-        return
-    }
     dir = newDir;
+    updateControlAvailability(false);
+    await rotateAllTo(DIR2ROT[newDir]);
     const stashPlayer = player;
     await moveTowards();
 
     player = stashPlayer;
-    updateControlAvailability(false);
 }
 async function moveTowards() {
     dx = DIR2DELTA[dir][0];
@@ -213,7 +207,6 @@ async function moveTowards() {
     yStart = dy == 1 ? HEIGHT-1: 0;
     xdelta = dx == 1 ? -1: 1;
     ydelta = dy == 1 ? -1: 1;
-    document.getElementById('arrow').className = dir + ' ' + COLORS[player];
     for (let i = xStart; i*xdelta < WIDTH - xStart; i += xdelta){
         for (let j = yStart; j*ydelta < HEIGHT - yStart; j += ydelta){
             if(values[i][j]){
@@ -264,9 +257,37 @@ async function animateRotation(element, angle,time=2){
     base =  '';
     for (let i = 1; i < angle+1; ++i){
         element.style = base + "rotate:" + i  + "deg;";
+    }
+}
+/*
+Expects positive inputs
+*/
+async function animateRotation(element, rotate,time=0.5){
+    delta = 1;
+    if (rotate > 180){
+        rotate = rotate - 360;
+        delta = -1;
+    }
+    wait = time*1000/Math.abs(rotate);
+    rot = element.style.rotate;
+    initialAngle = Number( rot.slice(0,rot.length - 3))
+    let angle = initialAngle;
+    while (angle != initialAngle + rotate){
+        angle += delta
+        x = angle % 360;
+        element.style = "rotate:" + x  + "deg;";
         await delay(wait);
     }
-console.log("DONE: " + angle);
+}
+
+async function rotateAllTo(angle, time=1){
+    b = document.getElementsByClassName('square')[0];
+    c = document.getElementsByClassName('controls')[0];
+    rot = b.style.rotate;
+    initialAngle = Number( rot.slice(0,rot.length - 3));
+    d_angle = (360 + angle - initialAngle) % 360;
+    animateRotation(b, d_angle, time);
+    await animateRotation(c, d_angle, time);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
