@@ -18,6 +18,7 @@ let player = 1;
 let dir = SOUTH;
 let values = [];
 let controlsAvailable = true;
+let gameOver = false;
 
 function delay(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds); });
@@ -58,7 +59,7 @@ function min(a, b) {
 }
 
 async function buttonPressed(x, y) {
-    if (updating) {
+    if (updating || gameOver) {
         return;
     }
     updating = true;
@@ -117,6 +118,7 @@ async function buttonPressed(x, y) {
         updateControlAvailability(true);
     }
     updating = false;
+    checkForEndOfGame();
 }
 
 function updateColor(x, j, newColor, number) {
@@ -144,7 +146,15 @@ function reset() {
     indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
     controlsAvailable = true;
-    rotateAllTo(0, 0)
+    rotateAllTo(0, 0);
+    gameOver = false;
+    game_over_message = document.getElementById('gameover')
+    console.log(game_over_message)
+    try {
+        document.getElementsByClassName('before-board')[0].removeChild(document.getElementById('gameover'));
+    } catch (error){
+        console.log(error)
+    }
 }
 
 function updateControlAvailability(boardPressed) {
@@ -189,7 +199,8 @@ function addButtonsToBoard() {
 }
 
 async function move(newDir) {
-    if (!controlsAvailable) {
+    updating = true;
+    if (!controlsAvailable || gameOver) {
         return;
     }
     dir = newDir;
@@ -199,6 +210,11 @@ async function move(newDir) {
     await moveTowards();
 
     player = stashPlayer;
+    await checkForEndOfGame();
+    if (gameOver){
+        console.log("gameOver...");
+    }
+    updating = false;
 }
 async function moveTowards() {
     dx = DIR2DELTA[dir][0];
@@ -215,22 +231,46 @@ async function moveTowards() {
             }
         }
     }
+    await delay(300);
+}
 
+async function checkForEndOfGame(){
+    winners = isGameOver();
+    if (winners.length == 0){
+        return
+    }
+    let message;
+    if (winners.length == 2){
+        message = "TIE GAME";
+    } else if (winners.length == 1){
+        message = COLORS[winners[0]] + ' wins!'
+    }
+    m = document.createElement('h1');
+    m.id = 'gameover';
+    m.appendChild(document.createTextNode(message));
+    document.getElementsByClassName('before-board')[0].appendChild(m);
+    gameOver = true;
 }
 
 function isGameOver() {
     byVert = wonByTower();
     byHoriz = wonByWall();
-    byDiag = wonByDiag();
-
+    diagUp = wonByDiagUp();
+    diagDown = wonByDiagDown();
+    hasWon = []
+    for (let player of [1,2]){
+        if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
+            hasWon.push(player)
+        }   
+    }
+    return hasWon
 }
 
 function wonByTower() {
-    i = 0;
     let winners = [];
     for (let i = 0; i < WIDTH; ++i) {
         j = 0;
-        while (j < HEIGHT - 4) {
+        while (j < HEIGHT - 3) {
             v = values[i][j];
             if (v == 0) {
                 j += 1;
@@ -244,70 +284,88 @@ function wonByTower() {
                     break;
                 }
             }
-            if (allEqual && !(v in winners)) {
+            if (allEqual && !(winners.includes(v))) {
                 winners.push(v);
+                j += 4;
             }
-            j += 4;
         }
     }
     return winners;
 }
 
 function wonByWall() {
-    i = 0;
     let winners = [];
-    for (let i = 0; i < HEIGHT; ++i) {
-        j = 0;
-        while (j < WIDTH - 4) {
+    for (let j = 0; j < HEIGHT; ++j) {
+        i = 0;
+        while (i < WIDTH - 3) {
             v = values[i][j];
             if (v == 0) {
-                j += 1;
+                i += 1;
                 continue;
             }
             let allEqual = true;
             for (let k = 1; k < 4; ++k) {
-                if (v != values[i][j + k]) {
-                    j += k
+                if (v != values[i+k][j]) {
+                    i += k
                     allEqual = false;
                     break;
                 }
             }
-            if (allEqual && !(v in winners)) {
+            if (allEqual && !(winners.includes(v))) {
                 winners.push(v);
+                i += 4
             }
-            j += 4;
         }
     }
     return winners;
 }
 
-function wonByPositiveDiagonal() {
-    i = 0;
+function wonByDiagUp() {
     let winners = [];
-    for (let i = 0; i < HEIGHT; ++i) {
-        j = 0;
-        while (j < WIDTH - 4) {
+    for(let i = 0; i < WIDTH-3; ++i){
+        for(let j = 0; j < WIDTH-3; ++j){
             v = values[i][j];
-            if (v == 0) {
-                j += 1;
+            if (v == 0){
                 continue;
             }
-            let allEqual = true;
-            for (let k = 1; k < 4; ++k) {
-                if (v != values[i][j + k]) {
-                    j += k
+            allEqual = true;
+            for(let k = 1; k < 4; ++k){
+                if (v != values[i+k][j+k]){
                     allEqual = false;
                     break;
                 }
             }
-            if (allEqual && !(v in winners)) {
+            if (allEqual && !(winners.includes(v))) {
                 winners.push(v);
             }
-            j += 4;
         }
     }
     return winners;
 }
+
+function wonByDiagDown() {
+    let winners = [];
+    for(let i = 0; i < WIDTH-3; ++i){
+        for(let j = HEIGHT - 1; j >2; --j){
+            v = values[i][j];
+            if (v == 0){
+                continue;
+            }
+            allEqual = true;
+            for(let k = 1; k < 4; ++k){
+                if (v != values[i+k][j-k]){
+                    allEqual = false;
+                    break;
+                }
+            }
+            if (allEqual && !(winners.includes(v))) {
+                winners.push(v);
+            }
+        }
+    }
+    return winners;
+}
+
 
 async function animateRotation(element, angle, time = 2) {
     wait = time / angle; console.log(element.style);

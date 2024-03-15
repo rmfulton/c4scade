@@ -71,6 +71,13 @@ body {
 
 .board-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.board-and-controls {
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
