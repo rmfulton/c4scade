@@ -231,7 +231,7 @@ async function moveTowards() {
             }
         }
     }
-    await delay(300);
+    await delay(WAIT*4);
 }
 
 async function checkForEndOfGame(){
