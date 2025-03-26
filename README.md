@@ -6,4 +6,10 @@ Visit [c4scade.com](https://c4scade.com) to play.
 - make a Computer Player (1)
 - hover a colored piece depending on the location (2)
 
-## making a compute
+## making a computer player
+given the current game board, the computer player must
+- choose an orientation, then
+- choose a column to play in
+
+For starters, let's implement a computer player that chooses randomly.
+Then, 

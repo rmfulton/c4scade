@@ -158,3 +158,11 @@ body {
 .SW {
     rotate:45deg;
 }
+
+.hidden {
+    visibility: hidden;
+}
+
+.shown {
+    
+}

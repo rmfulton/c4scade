@@ -12,6 +12,7 @@ DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270,
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
+const SEARCH_DEPTH = 3;
 
 let updating = false;
 let player = 1;
@@ -19,6 +20,7 @@ let dir = SOUTH;
 let values = [];
 let controlsAvailable = true;
 let gameOver = false;
+let playComputer = false;
 
 function delay(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds); });
@@ -117,8 +119,16 @@ async function buttonPressed(x, y) {
         player = 3 - player;
         updateControlAvailability(true);
     }
-    updating = false;
     checkForEndOfGame();
+    if (playComputer){
+        computerMove();
+    }
+    checkForEndOfGame()
+    updating = false;
+}
+
+async function computerMove(){
+    
 }
 
 function updateColor(x, j, newColor, number) {
@@ -261,9 +271,23 @@ function isGameOver() {
     for (let player of [1,2]){
         if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
             hasWon.push(player)
-        }   
+        } 
+    }
+    if (hasWon.length == 0 && noMoreSpace()){
+        hasWon = [1,2];
     }
     return hasWon
+}
+
+function noMoreSpace(){
+    for (let a of values){
+        for (let b of a){
+            if (b == 0){
+                return false
+            }
+        }
+    }
+    return true;
 }
 
 function wonByTower() {
