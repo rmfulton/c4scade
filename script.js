@@ -122,8 +122,8 @@ async function buttonPressed(x, y) {
     checkForEndOfGame();
     if (playComputer){
         computerMove();
+        checkForEndOfGame()
     }
-    checkForEndOfGame()
     updating = false;
 }
 
