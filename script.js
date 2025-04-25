@@ -13,7 +13,14 @@ const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
 const SEARCH_DEPTH = 3;
-
+let state = {
+    updating: false,
+    player:1,
+    dir:SOUTH,
+    values: [],
+    controlsAvailable: true,
+    gameOver: false
+}
 let updating = false;
 let player = 1;
 let dir = SOUTH;
@@ -37,8 +44,8 @@ function inBounds(x, y) {
 }
 
 async function swapColors(x1, y1, x2, y2) {
-    v1 = values[x1][y1]
-    v2 = values[x2][y2]
+    v1 = state.values[x1][y1]
+    v2 = state.values[x2][y2]
     updateColor(x1, y1, COLORS[v2], v2);
     updateColor(x2, y2, COLORS[v1], v1);
     await delay(WAIT);
@@ -48,7 +55,7 @@ async function moveInDirection(x, y, dx, dy) {
     let newx = x + dx;
     let newy = y + dy;
 
-    while (inBounds(newx, newy) && values[newx][newy] == 0) {
+    while (inBounds(newx, newy) && state.values[newx][newy] == 0) {
         await swapColors(x, y, newx, newy);
         x = newx;
         y = newy;
@@ -61,12 +68,12 @@ function min(a, b) {
 }
 
 async function buttonPressed(x, y) {
-    if (updating || gameOver) {
+    if (state.updating || state.gameOver) {
         return;
     }
-    updating = true;
+    state.updating = true;
     let dx = 0, dy = 0, m = 0;
-    switch (dir) {
+    switch (state.dir) {
         case SOUTH:
             y = 0;
             dy = 1;
@@ -113,10 +120,10 @@ async function buttonPressed(x, y) {
             break;
 
     }
-    if (values[x][y] == 0) {
-        updateColor(x, y, COLORS[player], player);
+    if (state.values[x][y] == 0) {
+        updateColor(x, y, COLORS[state.player], state.player);
         await moveInDirection(x, y, dx, dy);
-        player = 3 - player;
+        state.player = 3 - state.player;
         updateControlAvailability(true);
     }
     checkForEndOfGame();
@@ -124,7 +131,7 @@ async function buttonPressed(x, y) {
         computerMove();
         checkForEndOfGame()
     }
-    updating = false;
+    state.updating = false;
 }
 
 async function computerMove(){
@@ -132,7 +139,7 @@ async function computerMove(){
 }
 
 function updateColor(x, j, newColor, number) {
-    values[x][j] = number;
+    state.values[x][j] = number;
 
     g = document.getElementsByClassName('grid')[0];
     c = g.children[x];
@@ -146,8 +153,8 @@ function reset() {
             updateColor(i, j, COLORS[0], 0);
         }
     }
-    dir = SOUTH;
-    player = 1;
+    state.dir = SOUTH;
+    state.player = 1;
     controls = document.getElementsByClassName('controls')[0];
     controls.className = 'controls yellow';
     for (let child of controls.children) {
@@ -155,9 +162,9 @@ function reset() {
     }
     indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
-    controlsAvailable = true;
+    state.controlsAvailable = true;
     rotateAllTo(0, 0);
-    gameOver = false;
+    state.gameOver = false;
     game_over_message = document.getElementById('gameover')
     console.log(game_over_message)
     try {
@@ -172,10 +179,10 @@ function updateControlAvailability(boardPressed) {
     if (boardPressed) {
         shading = 'white';
         indicator = document.getElementById('indicator');
-        indicator.className = 'circle ' + COLORS[player];
+        indicator.className = 'circle ' + COLORS[state.player];
     }
     c = document.getElementsByClassName('controls')[0];
-    c.className = 'controls ' + COLORS[player];
+    c.className = 'controls ' + COLORS[state.player];
     buttons = c.children;
     for (let j = 0; j < 9; ++j) {
 
@@ -186,7 +193,7 @@ function updateControlAvailability(boardPressed) {
             button.className = "arrow white";
         }
     }
-    controlsAvailable = boardPressed;
+    state.controlsAvailable = boardPressed;
 }
 
 function addButtonsToBoard() {
@@ -196,39 +203,39 @@ function addButtonsToBoard() {
     for (let i = 0; i < WIDTH; ++i) {
         col = document.createElement('div');
         col.className = 'col';
-        values.push([])
+        state.values.push([])
         for (let j = 0; j < HEIGHT; ++j) {
             element = document.createElement("div");
             element.className = 'circle ' + COLORS[0];
             element.addEventListener("click", onClickBoard(i, j));
             col.appendChild(element);
-            values[i].push(0);
+            state.values[i].push(0);
         }
         g.appendChild(col);
     }
 }
 
-async function move(newDir) {
-    updating = true;
-    if (!controlsAvailable || gameOver) {
+async function rotateTo(newDir) {
+    state.updating = true;
+    if (!state.controlsAvailable || state.gameOver) {
         return;
     }
-    dir = newDir;
+    state.dir = newDir;
     updateControlAvailability(false);
     await rotateAllTo(DIR2ROT[newDir]);
-    const stashPlayer = player;
+    const stashPlayer = state.player;
     await moveTowards();
 
-    player = stashPlayer;
+    state.player = stashPlayer;
     await checkForEndOfGame();
-    if (gameOver){
+    if (state.gameOver){
         console.log("gameOver...");
     }
-    updating = false;
+    state.updating = false;
 }
 async function moveTowards() {
-    dx = DIR2DELTA[dir][0];
-    dy = DIR2DELTA[dir][1];
+    dx = DIR2DELTA[state.dir][0];
+    dy = DIR2DELTA[state.dir][1];
     xStart = dx == 1 ? WIDTH - 1 : 0;
     yStart = dy == 1 ? HEIGHT - 1 : 0;
     xdelta = dx == 1 ? -1 : 1;
@@ -236,8 +243,8 @@ async function moveTowards() {
     tasks = []
     for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
-            if (values[i][j]) {
-                player = values[i][j];
+            if (state.values[i][j]) {
+                state.player = state.values[i][j];
                 moveInDirection(i, j, dx, dy);
             }
         }
@@ -260,7 +267,7 @@ async function checkForEndOfGame(){
     m.id = 'gameover';
     m.appendChild(document.createTextNode(message));
     document.getElementsByClassName('before-board')[0].appendChild(m);
-    gameOver = true;
+    state.gameOver = true;
 }
 
 function isGameOver() {
@@ -281,7 +288,7 @@ function isGameOver() {
 }
 
 function noMoreSpace(){
-    for (let a of values){
+    for (let a of state.values){
         for (let b of a){
             if (b == 0){
                 return false
@@ -296,14 +303,14 @@ function wonByTower() {
     for (let i = 0; i < WIDTH; ++i) {
         j = 0;
         while (j < HEIGHT - 3) {
-            v = values[i][j];
+            v = state.values[i][j];
             if (v == 0) {
                 j += 1;
                 continue;
             }
             let allEqual = true;
             for (let k = 1; k < 4; ++k) {
-                if (v != values[i][j + k]) {
+                if (v != state.values[i][j + k]) {
                     j += k
                     allEqual = false;
                     break;
@@ -323,14 +330,14 @@ function wonByWall() {
     for (let j = 0; j < HEIGHT; ++j) {
         i = 0;
         while (i < WIDTH - 3) {
-            v = values[i][j];
+            v = state.values[i][j];
             if (v == 0) {
                 i += 1;
                 continue;
             }
             let allEqual = true;
             for (let k = 1; k < 4; ++k) {
-                if (v != values[i+k][j]) {
+                if (v != state.values[i+k][j]) {
                     i += k
                     allEqual = false;
                     break;
@@ -349,13 +356,13 @@ function wonByDiagUp() {
     let winners = [];
     for(let i = 0; i < WIDTH-3; ++i){
         for(let j = 0; j < HEIGHT-3; ++j){
-            v = values[i][j];
+            v = state.values[i][j];
             if (v == 0){
                 continue;
             }
             allEqual = true;
             for(let k = 1; k < 4; ++k){
-                if (v != values[i+k][j+k]){
+                if (v != state.values[i+k][j+k]){
                     allEqual = false;
                     break;
                 }
@@ -372,13 +379,13 @@ function wonByDiagDown() {
     let winners = [];
     for(let i = 0; i < WIDTH-3; ++i){
         for(let j = HEIGHT - 1; j >2; --j){
-            v = values[i][j];
+            v = state.values[i][j];
             if (v == 0){
                 continue;
             }
             allEqual = true;
             for(let k = 1; k < 4; ++k){
-                if (v != values[i+k][j-k]){
+                if (v != state.values[i+k][j-k]){
                     allEqual = false;
                     break;
                 }
