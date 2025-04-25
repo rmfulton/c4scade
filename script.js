@@ -7,8 +7,8 @@ const NE = "NE";
 const NW = "NW";
 const SE = "SE";
 const SW = "SW";
-DIR2DELTA = { 'N': [0, -1], 'S': [0, 1], 'E': [1, 0], 'W': [-1, 0], 'NW': [-1, -1], 'SW': [-1, 1], 'SE': [1, 1], 'NE': [1, -1] }
-DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315 }
+const DIR2DELTA = { 'N': [0, -1], 'S': [0, 1], 'E': [1, 0], 'W': [-1, 0], 'NW': [-1, -1], 'SW': [-1, 1], 'SE': [1, 1], 'NE': [1, -1] }
+const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315 }
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
@@ -233,6 +233,7 @@ async function moveTowards() {
     yStart = dy == 1 ? HEIGHT - 1 : 0;
     xdelta = dx == 1 ? -1 : 1;
     ydelta = dy == 1 ? -1 : 1;
+    tasks = []
     for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
             if (values[i][j]) {
@@ -347,7 +348,7 @@ function wonByWall() {
 function wonByDiagUp() {
     let winners = [];
     for(let i = 0; i < WIDTH-3; ++i){
-        for(let j = 0; j < WIDTH-3; ++j){
+        for(let j = 0; j < HEIGHT-3; ++j){
             v = values[i][j];
             if (v == 0){
                 continue;
