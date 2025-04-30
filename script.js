@@ -15,8 +15,8 @@ const HEIGHT = 6;
 const SEARCH_DEPTH = 3;
 let state = {
     updating: false,
-    player:1,
-    dir:SOUTH,
+    player: 1,
+    dir: SOUTH,
     values: [],
     controlsAvailable: true,
     gameOver: false
@@ -72,8 +72,29 @@ async function buttonPressed(x, y) {
         return;
     }
     state.updating = true;
-    let dx = 0, dy = 0, m = 0;
-    switch (state.dir) {
+    coordinates = getStartingLocation(x,y,state.dir);
+    x = coordinates[0];
+    y = coordinates[2];
+    const dx = coordinates[1];
+    const dy = coordinates[3];
+    await playPiece(x,y,dx,dy);
+    updateControlAvailability(true);
+    checkForEndOfGame();
+    state.updating = false;
+}
+
+async function playPiece(x,y,dx,dy){
+    if (state.values[x][y] == 0) {
+        updateColor(x, y, COLORS[state.player], state.player);
+        await moveInDirection(x, y, dx, dy);
+        state.player = getOtherPlayer(state.player);
+    }
+}
+
+// pure
+function getStartingLocation(pressed_x,pressed_y,current_direction){
+    let dx = 0, dy = 0, m = 0, x = pressed_x, y = pressed_y;
+    switch (current_direction) {
         case SOUTH:
             y = 0;
             dy = 1;
@@ -118,20 +139,12 @@ async function buttonPressed(x, y) {
             dx = -1;
             dy = 1;
             break;
-
     }
-    if (state.values[x][y] == 0) {
-        updateColor(x, y, COLORS[state.player], state.player);
-        await moveInDirection(x, y, dx, dy);
-        state.player = 3 - state.player;
-        updateControlAvailability(true);
-    }
-    checkForEndOfGame();
-    if (playComputer){
-        computerMove();
-        checkForEndOfGame()
-    }
-    state.updating = false;
+    return [x,dx,y,dy];
+}
+//pure
+function getOtherPlayer(current_player){
+    return 3 - current_player;
 }
 
 async function computerMove(){
@@ -227,7 +240,7 @@ async function rotateTo(newDir) {
     await moveTowards();
 
     state.player = stashPlayer;
-    await checkForEndOfGame();
+    checkForEndOfGame();
     if (state.gameOver){
         console.log("gameOver...");
     }
@@ -252,8 +265,8 @@ async function moveTowards() {
     await delay(WAIT*4);
 }
 
-async function checkForEndOfGame(){
-    winners = isGameOver();
+function checkForEndOfGame(){
+    winners = isGameOver(state.values, HEIGHT, WIDTH);
     if (winners.length == 0){
         return
     }
@@ -269,26 +282,26 @@ async function checkForEndOfGame(){
     document.getElementsByClassName('before-board')[0].appendChild(m);
     state.gameOver = true;
 }
-
-function isGameOver() {
-    byVert = wonByTower();
-    byHoriz = wonByWall();
-    diagUp = wonByDiagUp();
-    diagDown = wonByDiagDown();
+// pure
+function isGameOver(boardArray, height, width) {
+    byVert = wonByTower(boardArray, height, width);
+    byHoriz = wonByWall(boardArray, height, width);
+    diagUp = wonByDiagUp(boardArray, height, width);
+    diagDown = wonByDiagDown(boardArray, height, width);
     hasWon = []
     for (let player of [1,2]){
         if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
             hasWon.push(player)
         } 
     }
-    if (hasWon.length == 0 && noMoreSpace()){
+    if (hasWon.length == 0 && noMoreSpace(boardArray)){
         hasWon = [1,2];
     }
     return hasWon
 }
-
-function noMoreSpace(){
-    for (let a of state.values){
+// pure
+function noMoreSpace(boardArray){
+    for (let a of boardArray){
         for (let b of a){
             if (b == 0){
                 return false
@@ -297,20 +310,20 @@ function noMoreSpace(){
     }
     return true;
 }
-
-function wonByTower() {
+// pure
+function wonByTower(boardArray, height, width) {
     let winners = [];
-    for (let i = 0; i < WIDTH; ++i) {
+    for (let i = 0; i < width; ++i) {
         j = 0;
-        while (j < HEIGHT - 3) {
-            v = state.values[i][j];
+        while (j < height - 3) {
+            v = boardArray[i][j];
             if (v == 0) {
                 j += 1;
                 continue;
             }
             let allEqual = true;
             for (let k = 1; k < 4; ++k) {
-                if (v != state.values[i][j + k]) {
+                if (v != boardArray[i][j + k]) {
                     j += k
                     allEqual = false;
                     break;
@@ -324,20 +337,20 @@ function wonByTower() {
     }
     return winners;
 }
-
-function wonByWall() {
+// pure
+function wonByWall(boardArray, height, width) {
     let winners = [];
-    for (let j = 0; j < HEIGHT; ++j) {
+    for (let j = 0; j < height; ++j) {
         i = 0;
-        while (i < WIDTH - 3) {
-            v = state.values[i][j];
+        while (i < width - 3) {
+            v = boardArray[i][j];
             if (v == 0) {
                 i += 1;
                 continue;
             }
             let allEqual = true;
             for (let k = 1; k < 4; ++k) {
-                if (v != state.values[i+k][j]) {
+                if (v != boardArray[i+k][j]) {
                     i += k
                     allEqual = false;
                     break;
@@ -351,18 +364,18 @@ function wonByWall() {
     }
     return winners;
 }
-
-function wonByDiagUp() {
+// pure
+function wonByDiagUp(boardArray,width,height) {
     let winners = [];
-    for(let i = 0; i < WIDTH-3; ++i){
-        for(let j = 0; j < HEIGHT-3; ++j){
-            v = state.values[i][j];
+    for(let i = 0; i < width-3; ++i){
+        for(let j = 0; j < height-3; ++j){
+            v = boardArray[i][j];
             if (v == 0){
                 continue;
             }
             allEqual = true;
             for(let k = 1; k < 4; ++k){
-                if (v != state.values[i+k][j+k]){
+                if (v != boardArray[i+k][j+k]){
                     allEqual = false;
                     break;
                 }
@@ -374,18 +387,18 @@ function wonByDiagUp() {
     }
     return winners;
 }
-
-function wonByDiagDown() {
+// pure
+function wonByDiagDown(boardArray, height, width) {
     let winners = [];
-    for(let i = 0; i < WIDTH-3; ++i){
-        for(let j = HEIGHT - 1; j >2; --j){
-            v = state.values[i][j];
+    for(let i = 0; i < width-3; ++i){
+        for(let j = height - 1; j >2; --j){
+            v = boardArray[i][j];
             if (v == 0){
                 continue;
             }
             allEqual = true;
             for(let k = 1; k < 4; ++k){
-                if (v != state.values[i+k][j-k]){
+                if (v != boardArray[i+k][j-k]){
                     allEqual = false;
                     break;
                 }
