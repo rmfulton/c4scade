@@ -21,13 +21,6 @@ let state = {
     controlsAvailable: true,
     gameOver: false
 }
-let updating = false;
-let player = 1;
-let dir = SOUTH;
-let values = [];
-let controlsAvailable = true;
-let gameOver = false;
-let playComputer = false;
 
 function delay(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds); });
