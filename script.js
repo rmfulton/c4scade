@@ -160,7 +160,7 @@ function updateColor(x, j, newColor, number) {
 
 }
 
-function reset() {
+async function reset() {
     for (let i = 0; i < WIDTH; ++i) {
         for (let j = 0; j < HEIGHT; ++j) {
             updateColor(i, j, COLORS[0], 0);
@@ -176,7 +176,7 @@ function reset() {
     indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
     state.controlsAvailable = true;
-    rotateAllTo(0, 0);
+    await rotateAllTo(0, 0);
     state.gameOver = false;
     game_over_message = document.getElementById('gameover')
     console.log(game_over_message)
@@ -258,11 +258,17 @@ async function moveTowards() {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
             if (state.values[i][j]) {
                 state.player = state.values[i][j];
-                moveInDirection(i, j, dx, dy);
+                tasks.push(moveInDirection(i, j, dx, dy));
             }
         }
     }
-    await delay(WAIT*4);
+    await whenAllDone(tasks);
+}
+
+async function whenAllDone(tasks){
+    for (let t of tasks){
+        await t;
+    }
 }
 
 function checkForEndOfGame(){
@@ -446,6 +452,7 @@ async function rotateAllTo(angle, time = 1) {
     rot = b.style.rotate;
     initialAngle = Number(rot.slice(0, rot.length - 3));
     d_angle = (360 + angle - initialAngle) % 360;
+    // these happen concurrently
     animateRotation(b, d_angle, time);
     await animateRotation(c, d_angle, time);
 }
