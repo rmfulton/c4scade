@@ -7,6 +7,7 @@ const NE = "NE";
 const NW = "NW";
 const SE = "SE";
 const SW = "SW";
+const directions = [NORTH, SOUTH, EAST, WEST, NE, NW, SE, SW];
 const DIR2DELTA = { 'N': [0, -1], 'S': [0, 1], 'E': [1, 0], 'W': [-1, 0], 'NW': [-1, -1], 'SW': [-1, 1], 'SE': [1, 1], 'NE': [1, -1] }
 const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315 }
 const WAIT = 70;
@@ -19,7 +20,8 @@ let state = {
     dir: SOUTH,
     values: [],
     controlsAvailable: true,
-    gameOver: false
+    gameOver: false,
+    playComputer: false
 }
 
 function delay(milliseconds) {
@@ -29,6 +31,14 @@ function delay(milliseconds) {
 function onClickBoard(x, y) {
     return async function () {
         await buttonPressed(x, y);
+        if (state.playComputer){
+            computerAction = computerMove(state.values, state.dir, state.player);
+            newDir = computerAction[0];
+            newCoords = computerAction[1];
+            await rotateTo(newDir);
+            await buttonPressed(newCoords[0], newCoords[1]);
+            
+        }
     };
 }
 
@@ -139,9 +149,116 @@ function getStartingLocation(pressed_x,pressed_y,current_direction){
 function getOtherPlayer(current_player){
     return 3 - current_player;
 }
+/*
+This function should return 
+- the direction to rotate the board in, and
+- the i,j indices to click given the state of the board
+*/
+function computerMove(currentBoard, current_dir, playerTurn){
+    // if there's a winning move in one turn, play it
+    for(let direction of directions){
+        const afterRotating = simulateRotation(currentBoard, direction);
+        result =  isGameOver(afterRotating, HEIGHT, WIDTH);
+        if ( intArrayEquals(result, [playerTurn])){
+            return [direction,firstAvailableMove(currentBoard)]
+        }
+        // TODO: optimize from time w*h to MAX(w,h))
+        for (let i = 0; i < WIDTH; ++i){
+            for (let j = 0; j < HEIGHT; ++j){
+                if (afterRotating[i][j] == 0){
+                    // TODO: enable removing the piece you play
+                    let afterPlaying = deepcopy(afterRotating);
+                    simulateAddition(afterPlaying, direction, playerTurn, i,j);
+                    result = isGameOver(afterPlaying, HEIGHT, WIDTH);
+                    if (intArrayEquals(result, [playerTurn])){
+                        return [direction,[i,j]];
+                    }
+                }
+            }
+        }
+    }
+    // otherwise, play the stupid move
+    return [current_dir, firstAvailableMove(currentBoard)]
+}
 
-async function computerMove(){
-    
+function intArrayEquals(a,b){
+    if (a.length != b.length){
+        return false;
+    }
+    for(let i = 0; i < a.length; ++i){
+        if (a[i] != b[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+function simulateMoveInDirection(x, y, dx, dy, board) {
+    let newx = x + dx;
+    let newy = y + dy;
+
+    while (inBounds(newx, newy) && board[newx][newy] == 0) {
+        swapValues(x, y, newx, newy, board);
+        x = newx;
+        y = newy;
+        newx += dx;
+        newy += dy;
+    }
+}
+
+function swapValues(x,y,a,b,board){
+    tmp = board[x][y];
+    board[x][y] = board[a][b];
+    board[a][b] = tmp;
+}
+
+function simulateAddition(board, direction, playerTurn, i,j){
+    dx = DIR2DELTA[direction][0];
+    dy = DIR2DELTA[direction][1];
+    board[i][j] = playerTurn;
+    simulateMoveInDirection(i,j,dx,dy, board)
+}
+
+
+function simulateRotation(values, newDirection){
+    values = deepcopy(values);
+    dx = DIR2DELTA[newDirection][0];
+    dy = DIR2DELTA[newDirection][1];
+    xStart = dx == 1 ? WIDTH - 1 : 0;
+    yStart = dy == 1 ? HEIGHT - 1 : 0;
+    xdelta = dx == 1 ? -1 : 1;
+    ydelta = dy == 1 ? -1 : 1;
+    tasks = []
+    for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
+        for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
+            if (values[i][j]) {
+                simulateMoveInDirection(i, j, dx, dy,values);
+            }
+        }
+    }
+    return values;
+}
+
+function deepcopy(values){
+    let newValues = [];
+    for (let i = 0; i < values.length; ++i){
+        let element = []
+        for (let j = 0; j < values[i].length; ++j){
+            element.push(values[i][j]);
+        }
+        newValues.push(element);
+    }
+    return newValues;
+}
+
+function firstAvailableMove(currentBoard){
+    for (let i = 0; i < WIDTH; ++i){
+        for (let j = 0; j < HEIGHT; ++j){
+            if (currentBoard[i][j] == 0){
+                return [i,j];
+            }
+        }
+    }
 }
 
 function updateColor(x, j, newColor, number) {
@@ -229,10 +346,7 @@ async function rotateTo(newDir) {
     state.dir = newDir;
     updateControlAvailability(false);
     await rotateAllTo(DIR2ROT[newDir]);
-    const stashPlayer = state.player;
     await moveTowards();
-
-    state.player = stashPlayer;
     checkForEndOfGame();
     if (state.gameOver){
         console.log("gameOver...");
@@ -250,7 +364,6 @@ async function moveTowards() {
     for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
             if (state.values[i][j]) {
-                state.player = state.values[i][j];
                 tasks.push(moveInDirection(i, j, dx, dy));
             }
         }
