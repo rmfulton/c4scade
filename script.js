@@ -13,7 +13,7 @@ const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W'
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
-const SEARCH_DEPTH = 3;
+const SEARCH_DEPTH = 1;
 let state = {
     updating: false,
     player: 1,
@@ -159,7 +159,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
     let okayMoves = [];
     for(let direction of directions){
         const afterRotating = simulateRotation(currentBoard, direction);
-        result =  isGameOver(afterRotating, HEIGHT, WIDTH);
+        const result =  isGameOver(afterRotating, HEIGHT, WIDTH);
         if ( intArrayEquals(result, [playerTurn])){
             return [direction,firstAvailableMove(currentBoard)]
         }
@@ -173,8 +173,9 @@ function computerMove(currentBoard, current_dir, playerTurn){
                     // TODO: enable removing the piece you play
                     let afterPlaying = deepcopy(afterRotating);
                     simulateAddition(afterPlaying, direction, playerTurn, i,j);
-                    result = isGameOver(afterPlaying, HEIGHT, WIDTH);
+                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), SEARCH_DEPTH);
                     if (intArrayEquals(result, [playerTurn])){
+                        console.log("found a forced win");
                         return [direction,[i,j]];
                     }
                     else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
@@ -187,7 +188,67 @@ function computerMove(currentBoard, current_dir, playerTurn){
         }
     }
     // otherwise, play a random move
-    return randomChoice(okayMoves)
+    if (okayMoves.length  > 0){
+        return randomChoice(okayMoves);
+    }
+    else {
+        return [current_dir,firstAvailableMove(currentBoard)]
+    }
+}
+// a generalization of isGameOver
+function guaranteed_winners(currentBoard, playerTurn, num_moves){
+    preliminary_result = isGameOver(currentBoard, HEIGHT, WIDTH);
+    if (preliminary_result.length > 0 || num_moves == 0){
+        return preliminary_result;
+    }
+
+    let losing_possible = false;
+    let tying_possible = false;
+    let undetermined_outcome = false;
+    for (let direction of directions){
+        const afterRotating = simulateRotation(currentBoard, direction);
+        const result = isGameOver(afterRotating, HEIGHT, WIDTH);
+        if ( intArrayEquals(result, [playerTurn])){
+            return result;
+        }
+        else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+            losing_possible = true;
+            continue;
+        } else if (result.length == 2){
+            tying_possible = true;
+            continue;
+        }
+        // TODO: optimize from time w*h to MAX(w,h))
+        for (let i = 0; i < WIDTH; ++i){
+            for (let j = 0; j < HEIGHT; ++j){
+                if (afterRotating[i][j] == 0){
+                    // TODO: enable removing the piece you play
+                    let afterPlaying = deepcopy(afterRotating);
+                    simulateAddition(afterPlaying, direction, playerTurn, i,j);
+                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), num_moves - 1);
+                    if (intArrayEquals(result, [playerTurn])){
+                        return result;
+                    }
+                    else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+                        losing_possible = true;
+                    } else if (result.length == 2){
+                        tying_possible = true;
+                    } else {
+                        undetermined_outcome = true;
+                    }
+                }
+            }
+        }
+    }
+    // we play for a win
+    if (undetermined_outcome){
+        return [];
+    } else if (tying_possible){
+        return [playerTurn, getOtherPlayer(playerTurn)];
+    } else {
+        return [];
+    }
+
 }
 
 function randomChoice(array){
