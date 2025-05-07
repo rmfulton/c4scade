@@ -21,7 +21,7 @@ let state = {
     values: [],
     controlsAvailable: true,
     gameOver: false,
-    playComputer: false
+    playComputer: true
 }
 
 function delay(milliseconds) {
@@ -156,11 +156,15 @@ This function should return
 */
 function computerMove(currentBoard, current_dir, playerTurn){
     // if there's a winning move in one turn, play it
+    let okayMoves = [];
     for(let direction of directions){
         const afterRotating = simulateRotation(currentBoard, direction);
         result =  isGameOver(afterRotating, HEIGHT, WIDTH);
         if ( intArrayEquals(result, [playerTurn])){
             return [direction,firstAvailableMove(currentBoard)]
+        }
+        else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+            continue;
         }
         // TODO: optimize from time w*h to MAX(w,h))
         for (let i = 0; i < WIDTH; ++i){
@@ -173,12 +177,23 @@ function computerMove(currentBoard, current_dir, playerTurn){
                     if (intArrayEquals(result, [playerTurn])){
                         return [direction,[i,j]];
                     }
+                    else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+                        continue;
+                    } else{
+                        okayMoves.push([direction,[i,j]])
+                    }
                 }
             }
         }
     }
-    // otherwise, play the stupid move
-    return [current_dir, firstAvailableMove(currentBoard)]
+    // otherwise, play a random move
+    return randomChoice(okayMoves)
+}
+
+function randomChoice(array){
+    const L = array.length;
+    const i = Math.floor(Math.random()*L);
+    return array[i];
 }
 
 function intArrayEquals(a,b){
