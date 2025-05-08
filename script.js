@@ -23,7 +23,7 @@ let state = {
 }
 const config = {
     PLAY_COMPUTER: true,
-    SEARCH_DEPTH: 3
+    SEARCH_DEPTH: 1
 }
 
 function delay(milliseconds) {
@@ -158,11 +158,15 @@ This function should return
 */
 function computerMove(currentBoard, current_dir, playerTurn){
     // if there's a winning move in one turn, play it
+    const d = new Date();
+    const t = d.getTime();
+    console.log("thinking...");
     let okayMoves = [];
     for(let direction of directions){
         const afterRotating = simulateRotation(currentBoard, direction);
         const result =  isGameOver(afterRotating);
         if ( intArrayEquals(result, [playerTurn])){
+            printThinkingTime(t);
             return [direction,firstAvailableMove(currentBoard)]
         }
         else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
@@ -191,12 +195,19 @@ function computerMove(currentBoard, current_dir, playerTurn){
     }
     // otherwise, play a random move
     if (okayMoves.length  > 0){
+        printThinkingTime(t);
         return randomChoice(okayMoves);
     }
     else {
+        printThinkingTime(t);
         console.log("we're cooked");
         return [current_dir,firstAvailableMove(currentBoard)]
     }
+}
+
+function printThinkingTime(t){
+    const d2 = new Date();
+    console.log(`thought for ${(d2.getTime() - t)/1000} seconds`)
 }
 // a generalization of isGameOver
 function guaranteed_winners(currentBoard, playerTurn, num_moves){
