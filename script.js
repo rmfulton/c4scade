@@ -159,7 +159,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
     let okayMoves = [];
     for(let direction of directions){
         const afterRotating = simulateRotation(currentBoard, direction);
-        const result =  isGameOver(afterRotating, HEIGHT, WIDTH);
+        const result =  isGameOver(afterRotating);
         if ( intArrayEquals(result, [playerTurn])){
             return [direction,firstAvailableMove(currentBoard)]
         }
@@ -192,12 +192,13 @@ function computerMove(currentBoard, current_dir, playerTurn){
         return randomChoice(okayMoves);
     }
     else {
+        console.log("we're cooked");
         return [current_dir,firstAvailableMove(currentBoard)]
     }
 }
 // a generalization of isGameOver
 function guaranteed_winners(currentBoard, playerTurn, num_moves){
-    preliminary_result = isGameOver(currentBoard, HEIGHT, WIDTH);
+    preliminary_result = isGameOver(currentBoard);
     if (preliminary_result.length > 0 || num_moves == 0){
         return preliminary_result;
     }
@@ -207,7 +208,7 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
     let undetermined_outcome = false;
     for (let direction of directions){
         const afterRotating = simulateRotation(currentBoard, direction);
-        const result = isGameOver(afterRotating, HEIGHT, WIDTH);
+        const result = isGameOver(afterRotating);
         if ( intArrayEquals(result, [playerTurn])){
             return result;
         }
@@ -454,7 +455,7 @@ async function whenAllDone(tasks){
 }
 
 function checkForEndOfGame(){
-    winners = isGameOver(state.values, HEIGHT, WIDTH);
+    winners = isGameOver(state.values);
     if (winners.length == 0){
         return
     }
@@ -471,11 +472,11 @@ function checkForEndOfGame(){
     state.gameOver = true;
 }
 // pure
-function isGameOver(boardArray, height, width) {
-    byVert = wonByTower(boardArray, height, width);
-    byHoriz = wonByWall(boardArray, height, width);
-    diagUp = wonByDiagUp(boardArray, height, width);
-    diagDown = wonByDiagDown(boardArray, height, width);
+function isGameOver(boardArray) {
+    byVert = wonByTower(boardArray);
+    byHoriz = wonByWall(boardArray);
+    diagUp = wonByDiagUp(boardArray);
+    diagDown = wonByDiagDown(boardArray);
     hasWon = []
     for (let player of [1,2]){
         if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
@@ -499,8 +500,10 @@ function noMoreSpace(boardArray){
     return true;
 }
 // pure
-function wonByTower(boardArray, height, width) {
+function wonByTower(boardArray) {
     let winners = [];
+    width = boardArray.length;
+    height = boardArray[0].length;
     for (let i = 0; i < width; ++i) {
         j = 0;
         while (j < height - 3) {
@@ -526,8 +529,10 @@ function wonByTower(boardArray, height, width) {
     return winners;
 }
 // pure
-function wonByWall(boardArray, height, width) {
+function wonByWall(boardArray) {
     let winners = [];
+    width = boardArray.length;
+    height = boardArray[0].length;
     for (let j = 0; j < height; ++j) {
         i = 0;
         while (i < width - 3) {
@@ -553,8 +558,10 @@ function wonByWall(boardArray, height, width) {
     return winners;
 }
 // pure
-function wonByDiagUp(boardArray,width,height) {
+function wonByDiagUp(boardArray) {
     let winners = [];
+    width = boardArray.length;
+    height = boardArray[0].length;
     for(let i = 0; i < width-3; ++i){
         for(let j = 0; j < height-3; ++j){
             v = boardArray[i][j];
@@ -576,8 +583,10 @@ function wonByDiagUp(boardArray,width,height) {
     return winners;
 }
 // pure
-function wonByDiagDown(boardArray, height, width) {
+function wonByDiagDown(boardArray) {
     let winners = [];
+    width = boardArray.length;
+    height = boardArray[0].length;
     for(let i = 0; i < width-3; ++i){
         for(let j = height - 1; j >2; --j){
             v = boardArray[i][j];
