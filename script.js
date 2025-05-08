@@ -13,6 +13,7 @@ const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W'
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
+const COLUMN_SEEDS = getAllColumnSeeds(WIDTH, HEIGHT);
 let state = {
     updating: false,
     player: 1,
@@ -20,11 +21,14 @@ let state = {
     values: [],
     controlsAvailable: true,
     gameOver: false,
+    boardBlank: true,
 }
 const config = {
-    PLAY_COMPUTER: true,
-    SEARCH_DEPTH: 1
+    PLAY_COMPUTER: false,
+    SEARCH_DEPTH: 3
 }
+
+let memo = {};
 
 function delay(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds); });
@@ -46,6 +50,10 @@ function onClickBoard(x, y) {
 
 function inBounds(x, y) {
     return 0 <= x && x < WIDTH && 0 <= y && y < HEIGHT;
+}
+
+function coordInBounds(pair){
+    return inBounds(pair[0], pair[1]);
 }
 
 async function swapColors(x1, y1, x2, y2) {
@@ -77,6 +85,7 @@ async function buttonPressed(x, y) {
         return;
     }
     state.updating = true;
+    state.boardBlank = false;
     coordinates = getStartingLocation(x,y,state.dir);
     x = coordinates[0];
     y = coordinates[2];
@@ -172,23 +181,21 @@ function computerMove(currentBoard, current_dir, playerTurn){
         else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
             continue;
         }
-        // TODO: optimize from time w*h to MAX(w,h))
-        for (let i = 0; i < WIDTH; ++i){
-            for (let j = 0; j < HEIGHT; ++j){
-                if (afterRotating[i][j] == 0){
-                    // TODO: enable removing the piece you play
-                    let afterPlaying = deepcopy(afterRotating);
-                    simulateAddition(afterPlaying, direction, playerTurn, i,j);
-                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), config.SEARCH_DEPTH);
-                    if (intArrayEquals(result, [playerTurn])){
-                        console.log("found a forced win");
-                        return [direction,[i,j]];
-                    }
-                    else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
-                        continue;
-                    } else{
-                        okayMoves.push([direction,[i,j]])
-                    }
+        for (let move of COLUMN_SEEDS[direction]){
+            let i = move[0], j = move[1];
+            if (afterRotating[i][j] == 0){
+                // TODO: enable removing the piece you play
+                let afterPlaying = deepcopy(afterRotating);
+                simulateAddition(afterPlaying, direction, playerTurn, i,j);
+                const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), config.SEARCH_DEPTH);
+                if (intArrayEquals(result, [playerTurn])){
+                    console.log("found a forced win");
+                    return [direction,[i,j]];
+                }
+                else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+                    continue;
+                } else{
+                    okayMoves.push([direction,[i,j]])
                 }
             }
         }
@@ -216,7 +223,6 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
         return preliminary_result;
     }
 
-    let losing_possible = false;
     let tying_possible = false;
     let undetermined_outcome = false;
     for (let direction of directions){
@@ -232,24 +238,22 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
             tying_possible = true;
             continue;
         }
-        // TODO: optimize from time w*h to MAX(w,h))
-        for (let i = 0; i < WIDTH; ++i){
-            for (let j = 0; j < HEIGHT; ++j){
-                if (afterRotating[i][j] == 0){
-                    // TODO: enable removing the piece you play
-                    let afterPlaying = deepcopy(afterRotating);
-                    simulateAddition(afterPlaying, direction, playerTurn, i,j);
-                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), num_moves - 1);
-                    if (intArrayEquals(result, [playerTurn])){
-                        return result;
-                    }
-                    else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
-                        losing_possible = true;
-                    } else if (result.length == 2){
-                        tying_possible = true;
-                    } else {
-                        undetermined_outcome = true;
-                    }
+        for (let move of COLUMN_SEEDS[direction]){
+            let i = move[0], j = move[1];
+            if (afterRotating[i][j] == 0){
+                // TODO: enable removing the piece you play
+                let afterPlaying = deepcopy(afterRotating);
+                simulateAddition(afterPlaying, direction, playerTurn, i,j);
+                const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), num_moves - 1);
+                if (intArrayEquals(result, [playerTurn])){
+                    return result;
+                }
+                else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
+                    losing_possible = true;
+                } else if (result.length == 2){
+                    tying_possible = true;
+                } else {
+                    undetermined_outcome = true;
                 }
             }
         }
@@ -260,7 +264,7 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
     } else if (tying_possible){
         return [playerTurn, getOtherPlayer(playerTurn)];
     } else {
-        return [];
+        return [getOtherPlayer(playerTurn)];
     }
 
 }
@@ -366,6 +370,7 @@ async function reset() {
             updateColor(i, j, COLORS[0], 0);
         }
     }
+    state.boardBlank = true;
     state.dir = SOUTH;
     state.player = 1;
     controls = document.getElementsByClassName('controls')[0];
@@ -598,15 +603,15 @@ function wonByDiagUp(boardArray) {
 // pure
 function wonByDiagDown(boardArray) {
     let winners = [];
-    width = boardArray.length;
-    height = boardArray[0].length;
+    const width = boardArray.length;
+    const height = boardArray[0].length;
     for(let i = 0; i < width-3; ++i){
         for(let j = height - 1; j >2; --j){
             v = boardArray[i][j];
             if (v == 0){
                 continue;
             }
-            allEqual = true;
+            let allEqual = true;
             for(let k = 1; k < 4; ++k){
                 if (v != boardArray[i+k][j-k]){
                     allEqual = false;
@@ -621,41 +626,79 @@ function wonByDiagDown(boardArray) {
     return winners;
 }
 
-
-async function animateRotation(element, angle, time = 2) {
-    wait = time / angle; console.log(element.style);
-    base = '';
-    for (let i = 1; i < angle + 1; ++i) {
-        element.style = base + "rotate:" + i + "deg;";
+function getAllColumnSeeds(dimension0, dimension1){
+    result = {};
+    for(let direction of directions){
+        let seeds = [];
+        for(let i = 0; i < dimension0; ++i){
+            for (let j = 0; j < dimension1; ++j){
+                let coords;
+                let parentCoords = [i,j];
+                do {
+                    coords = parentCoords;
+                    parentCoords = [coords[0]-DIR2DELTA[direction][0], coords[1] - DIR2DELTA[direction][1]];
+                }
+                while (coordInBounds(parentCoords));
+                let alreadyContains = false;
+                for(let seed of seeds){
+                    if (intArrayEquals(seed, coords)){
+                        alreadyContains = true;
+                    }
+                }
+                if (alreadyContains == false){
+                    seeds.push(coords);
+                }
+            }
+        }
+        result[direction] = seeds;
     }
+    return result;
+
 }
+
 /*
 Expects positive inputs
 */
 async function animateRotation(element, rotate, time = 0.5) {
-    delta = 1;
+    let delta = 1;
     if (rotate > 180) {
         rotate = rotate - 360;
         delta = -1;
     }
-    wait = time * 1000 / Math.abs(rotate);
-    rot = element.style.rotate;
-    initialAngle = Number(rot.slice(0, rot.length - 3))
+    const wait = time * 1000 / Math.abs(rotate);
+    const rot = element.style.rotate;
+    const initialAngle = Number(rot.slice(0, rot.length - 3))
     let angle = initialAngle;
     while (angle != initialAngle + rotate) {
         angle += delta
-        x = angle % 360;
+        let x = angle % 360;
         element.style = "rotate:" + x + "deg;";
         await delay(wait);
     }
 }
 
+function setOpponent(newOpponent){
+    if (state.boardBlank){
+        if (newOpponent == "human"){
+            config.PLAY_COMPUTER = false;
+            return;
+        }
+        config.PLAY_COMPUTER = true;
+        config.SEARCH_DEPTH = parseSearchDepth(newOpponent);
+    }
+}
+
+function parseSearchDepth(newOpponent){
+    const length = newOpponent.length;
+    return parseInt(newOpponent.slice(length - 1))
+}
+
 async function rotateAllTo(angle, time = 1) {
-    b = document.getElementsByClassName('square')[0];
-    c = document.getElementsByClassName('controls')[0];
-    rot = b.style.rotate;
-    initialAngle = Number(rot.slice(0, rot.length - 3));
-    d_angle = (360 + angle - initialAngle) % 360;
+    let b = document.getElementsByClassName('square')[0];
+    let c = document.getElementsByClassName('controls')[0];
+    const rot = b.style.rotate;
+    const initialAngle = Number(rot.slice(0, rot.length - 3));
+    const d_angle = (360 + angle - initialAngle) % 360;
     // these happen concurrently
     animateRotation(b, d_angle, time);
     await animateRotation(c, d_angle, time);

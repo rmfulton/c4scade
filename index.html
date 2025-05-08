@@ -7,8 +7,14 @@
 </head>
 
 <body>
-    <!-- <input type="checkbox" onchange="toggleComputer()">Play Computer</input>
-    <div id="hideme" class="hidden">You are playing the computer</div> -->
+    <select type="radio" onchange="setOpponent(event.target.value)" id="opponent">
+        <option value="human">Play Human</option>
+        <option value="Computer0">Computer Level 0</option>
+        <option value="Computer1">Computer Level 1</option>
+        <option value="Computer2">Computer Level 2</option>
+        <option value="Computer3">Computer Level 3</option>
+    </select>
+    <div id="hideme" class="hidden">You are playing the computer</div>
     <div class="board-and-controls">
         <div class="before-board"></div>
         <div class="board-container">
