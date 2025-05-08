@@ -3,22 +3,18 @@ A four-in-a-row game with a twist - choose the direction of gravity before dropp
 Visit [c4scade.com](https://c4scade.com) to play.
 
 
-# PLANNED FEATURES:
+## PLANNED FEATURES:
 - provide a signal to the user that the computer is "thinking".🤔
     - provide a signal that the computer thinks it has won: 😈 😎 😍 🥳 🤫
     - provide a signal that the computer thinks it has lost : 😞 🥶 🤬 🙈 🫣
-# PLANNED IMPROVEMENTS:
+- allow a user to "undo" an accidental series of moves
+- make a Neural Network (how?)
+- make a mobile app
+- hover a colored piece depending on the location (2)
+  
+## PLANNED IMPROVEMENTS:
 - improve the game mode toggling
-# KNOWN BUGS:
+## KNOWN BUGS:
 - None. Yipee.
 ## COMPLETED FEATURES
-- make a Computer Player (1) DONE
-- hover a colored piece depending on the location (2) 
-
-## making a computer player
-given the current game board, the computer player must
-- choose an orientation, then
-- choose a column to play in
-
-For starters, let's implement a computer player that chooses randomly.
-Then, 
+- make a Computer Player DONE
