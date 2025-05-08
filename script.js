@@ -23,7 +23,7 @@ let state = {
 }
 const config = {
     PLAY_COMPUTER: true,
-    SEARCH_DEPTH: 1
+    SEARCH_DEPTH: 3
 }
 
 function delay(milliseconds) {
@@ -33,7 +33,7 @@ function delay(milliseconds) {
 function onClickBoard(x, y) {
     return async function () {
         await buttonPressed(x, y);
-        if (config.playComputer && !state.gameOver){
+        if (config.PLAY_COMPUTER && !state.gameOver){
             computerAction = computerMove(state.values, state.dir, state.player);
             newDir = computerAction[0];
             newCoords = computerAction[1];
