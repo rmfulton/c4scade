@@ -13,7 +13,6 @@ const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W'
 const WAIT = 70;
 const WIDTH = 7;
 const HEIGHT = 6;
-const SEARCH_DEPTH = 1;
 let state = {
     updating: false,
     player: 1,
@@ -21,7 +20,10 @@ let state = {
     values: [],
     controlsAvailable: true,
     gameOver: false,
-    playComputer: true
+}
+const config = {
+    PLAY_COMPUTER: true,
+    SEARCH_DEPTH: 1
 }
 
 function delay(milliseconds) {
@@ -31,7 +33,7 @@ function delay(milliseconds) {
 function onClickBoard(x, y) {
     return async function () {
         await buttonPressed(x, y);
-        if (state.playComputer && !state.gameOver){
+        if (config.playComputer && !state.gameOver){
             computerAction = computerMove(state.values, state.dir, state.player);
             newDir = computerAction[0];
             newCoords = computerAction[1];
@@ -173,7 +175,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
                     // TODO: enable removing the piece you play
                     let afterPlaying = deepcopy(afterRotating);
                     simulateAddition(afterPlaying, direction, playerTurn, i,j);
-                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), SEARCH_DEPTH);
+                    const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), config.SEARCH_DEPTH);
                     if (intArrayEquals(result, [playerTurn])){
                         console.log("found a forced win");
                         return [direction,[i,j]];
