@@ -11,10 +11,12 @@ Visit [c4scade.com](https://c4scade.com) to play.
 - make a Neural Network (how?)
 - make a mobile app
 - hover a colored piece depending on the location (2)
+- add a patreon button
+- add a bug button
   
 ## PLANNED IMPROVEMENTS:
 - improve the game mode toggling
 ## KNOWN BUGS:
-- None. Yipee.
+- Double clicking against the computer messes everything up
 ## COMPLETED FEATURES
 - make a Computer Player DONE
