@@ -31,7 +31,7 @@ function delay(milliseconds) {
 function onClickBoard(x, y) {
     return async function () {
         await buttonPressed(x, y);
-        if (state.playComputer){
+        if (state.playComputer && !state.gameOver){
             computerAction = computerMove(state.values, state.dir, state.player);
             newDir = computerAction[0];
             newCoords = computerAction[1];
