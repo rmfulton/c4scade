@@ -677,15 +677,14 @@ async function animateRotation(element, rotate, time = 0.5) {
     }
 }
 
-function setOpponent(newOpponent){
-    if (state.boardBlank){
-        if (newOpponent == "human"){
-            config.PLAY_COMPUTER = false;
-            return;
-        }
-        config.PLAY_COMPUTER = true;
-        config.SEARCH_DEPTH = parseSearchDepth(newOpponent);
+async function setOpponent(newOpponent){
+    await reset();
+    if (newOpponent == "human"){
+        config.PLAY_COMPUTER = false;
+        return;
     }
+    config.PLAY_COMPUTER = true;
+    config.SEARCH_DEPTH = parseSearchDepth(newOpponent);
 }
 
 function parseSearchDepth(newOpponent){
