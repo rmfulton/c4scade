@@ -48,7 +48,9 @@ function onClickBoard(x, y) {
             newDir = computerAction[0];
             newCoords = computerAction[1];
             await rotateTo(newDir);
-            await playAt(newCoords[0], newCoords[1]);
+            if (state.gameOver == false){
+                await playAt(newCoords[0], newCoords[1]);
+            }
         }
         state.updating = false;
     };
@@ -172,6 +174,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
     console.log("thinking...");
     let okayMoves = [];
     for(let direction of directions){
+        console.log(direction);
         const afterRotating = simulateRotation(currentBoard, direction);
         const result =  isGameOver(afterRotating);
         if ( intArrayEquals(result, [playerTurn])){
@@ -183,6 +186,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
             continue;
         }
         for (let move of COLUMN_SEEDS[direction]){
+            console.log(`${direction} and ${move[0]}, ${move[1]}, current-direction is ${state.dir}`)
             let i = move[0], j = move[1];
             if (afterRotating[i][j] == 0){
                 // TODO: enable removing the piece you play
