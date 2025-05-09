@@ -36,15 +36,21 @@ function delay(milliseconds) {
 
 function onClickBoard(x, y) {
     return async function () {
-        await buttonPressed(x, y);
+        if (state.updating || state.gameOver) {
+            return;
+        }
+        state.updating = true;
+        state.boardBlank = false;
+        await playAt(x, y);
         if (config.PLAY_COMPUTER && !state.gameOver){
+            state.updating = true;
             computerAction = computerMove(state.values, state.dir, state.player);
             newDir = computerAction[0];
             newCoords = computerAction[1];
             await rotateTo(newDir);
-            await buttonPressed(newCoords[0], newCoords[1]);
-            
+            await playAt(newCoords[0], newCoords[1]);
         }
+        state.updating = false;
     };
 }
 
@@ -80,12 +86,7 @@ function min(a, b) {
     return a < b ? a : b;
 }
 
-async function buttonPressed(x, y) {
-    if (state.updating || state.gameOver) {
-        return;
-    }
-    state.updating = true;
-    state.boardBlank = false;
+async function playAt(x, y) {
     coordinates = getStartingLocation(x,y,state.dir);
     x = coordinates[0];
     y = coordinates[2];
@@ -94,7 +95,6 @@ async function buttonPressed(x, y) {
     await playPiece(x,y,dx,dy);
     updateControlAvailability(true);
     checkForEndOfGame();
-    state.updating = false;
 }
 
 async function playPiece(x,y,dx,dy){
@@ -434,7 +434,6 @@ function addButtonsToBoard() {
 }
 
 async function rotateTo(newDir) {
-    state.updating = true;
     if (!state.controlsAvailable || state.gameOver) {
         return;
     }
@@ -446,7 +445,6 @@ async function rotateTo(newDir) {
     if (state.gameOver){
         console.log("gameOver...");
     }
-    state.updating = false;
 }
 async function moveTowards() {
     dx = DIR2DELTA[state.dir][0];
