@@ -17,6 +17,8 @@ Visit [c4scade.com](https://c4scade.com) to play.
 ## PLANNED IMPROVEMENTS:
 - improve the game mode toggling
 ## KNOWN BUGS:
-- Double clicking against the computer messes everything up
+- Sometimes the computer at level 2 freezes (hard to debug/replicate)
+- the computer at level 3 takes too long
+
 ## COMPLETED FEATURES
 - make a Computer Player DONE
