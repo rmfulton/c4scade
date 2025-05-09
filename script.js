@@ -176,6 +176,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
         const result =  isGameOver(afterRotating);
         if ( intArrayEquals(result, [playerTurn])){
             printThinkingTime(t);
+            console.log("found a forced win");
             return [direction,firstAvailableMove(currentBoard)]
         }
         else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
@@ -189,6 +190,7 @@ function computerMove(currentBoard, current_dir, playerTurn){
                 simulateAddition(afterPlaying, direction, playerTurn, i,j);
                 const result = guaranteed_winners(afterPlaying, getOtherPlayer(playerTurn), config.SEARCH_DEPTH);
                 if (intArrayEquals(result, [playerTurn])){
+                    printThinkingTime(t);
                     console.log("found a forced win");
                     return [direction,[i,j]];
                 }
