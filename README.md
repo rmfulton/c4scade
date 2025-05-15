@@ -23,7 +23,22 @@ Visit [c4scade.com](https://c4scade.com) to play.
 ## COMPLETED FEATURES
 - make a Computer Player DONE
 
-# RUN LOCALLY:
+## RUN LOCALLY:
+### one time:
+```sh
+npm install -g http-server
+```
+### each time
 ```sh
 http-server
+```
+
+## Test Locally
+### one time:
+```sh
+npm install -g mocha
+```
+### each time
+```sh
+npm test
 ```

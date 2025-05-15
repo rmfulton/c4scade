@@ -1,0 +1,19 @@
+{
+  "name": "c4scade",
+  "version": "1.0.0",
+  "description": "A four-in-a-row game with a twist",
+  "main": "lib.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmfulton/c4scade.git"
+  },
+  "author": "Robert Fulton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmfulton/c4scade/issues"
+  },
+  "homepage": "https://github.com/rmfulton/c4scade#readme"
+}
