@@ -1,3 +1,4 @@
+// import { noMoreSpace } from './lib.js';
 const COLORS = ["nocolor", "yellow", "red"]
 const SOUTH = "S";
 const NORTH = "N";
@@ -7,7 +8,7 @@ const NE = "NE";
 const NW = "NW";
 const SE = "SE";
 const SW = "SW";
-const directions = [NORTH, SOUTH, EAST, WEST, NE, NW, SE, SW];
+const directions = [NW, NORTH, NE, WEST, EAST, SW, SOUTH, SE];
 const DIR2DELTA = { 'N': [0, -1], 'S': [0, 1], 'E': [1, 0], 'W': [-1, 0], 'NW': [-1, -1], 'SW': [-1, 1], 'SE': [1, 1], 'NE': [1, -1] }
 const DIR2ROT = { 'S': 0, 'SE': 45, 'E': 90, 'NE': 135, 'N': 180, 'NW': 225, 'W': 270, 'SW': 315 }
 const WAIT = 70;
@@ -44,9 +45,9 @@ function onClickBoard(x, y) {
         await playAt(x, y);
         if (config.PLAY_COMPUTER && !state.gameOver){
             state.updating = true;
-            computerAction = computerMove(state.values, state.dir, state.player);
-            newDir = computerAction[0];
-            newCoords = computerAction[1];
+            const computerAction = computerMove(state.values, state.dir, state.player);
+            const newDir = computerAction[0];
+            const newCoords = computerAction[1];
             await rotateTo(newDir);
             if (state.gameOver == false){
                 await playAt(newCoords[0], newCoords[1]);
@@ -65,8 +66,8 @@ function coordInBounds(pair){
 }
 
 async function swapColors(x1, y1, x2, y2) {
-    v1 = state.values[x1][y1]
-    v2 = state.values[x2][y2]
+    const v1 = state.values[x1][y1]
+    const v2 = state.values[x2][y2]
     updateColor(x1, y1, COLORS[v2], v2);
     updateColor(x2, y2, COLORS[v1], v1);
     await delay(WAIT);
@@ -89,7 +90,7 @@ function min(a, b) {
 }
 
 async function playAt(x, y) {
-    coordinates = getStartingLocation(x,y,state.dir);
+    const coordinates = getStartingLocation(x,y,state.dir);
     x = coordinates[0];
     y = coordinates[2];
     const dx = coordinates[1];
@@ -224,7 +225,7 @@ function printThinkingTime(t){
 }
 // a generalization of isGameOver
 function guaranteed_winners(currentBoard, playerTurn, num_moves){
-    preliminary_result = isGameOver(currentBoard);
+    const preliminary_result = isGameOver(currentBoard);
     if (preliminary_result.length > 0 || num_moves == 0){
         return preliminary_result;
     }
@@ -238,7 +239,6 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
             return result;
         }
         else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
-            losing_possible = true;
             continue;
         } else if (result.length == 2){
             tying_possible = true;
@@ -255,7 +255,7 @@ function guaranteed_winners(currentBoard, playerTurn, num_moves){
                     return result;
                 }
                 else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
-                    losing_possible = true;
+                    continue;
                 } else if (result.length == 2){
                     tying_possible = true;
                 } else {
@@ -307,14 +307,14 @@ function simulateMoveInDirection(x, y, dx, dy, board) {
 }
 
 function swapValues(x,y,a,b,board){
-    tmp = board[x][y];
+    const tmp = board[x][y];
     board[x][y] = board[a][b];
     board[a][b] = tmp;
 }
 
 function simulateAddition(board, direction, playerTurn, i,j){
-    dx = DIR2DELTA[direction][0];
-    dy = DIR2DELTA[direction][1];
+    const dx = DIR2DELTA[direction][0];
+    const dy = DIR2DELTA[direction][1];
     board[i][j] = playerTurn;
     simulateMoveInDirection(i,j,dx,dy, board)
 }
@@ -322,13 +322,13 @@ function simulateAddition(board, direction, playerTurn, i,j){
 
 function simulateRotation(values, newDirection){
     values = deepcopy(values);
-    dx = DIR2DELTA[newDirection][0];
-    dy = DIR2DELTA[newDirection][1];
-    xStart = dx == 1 ? WIDTH - 1 : 0;
-    yStart = dy == 1 ? HEIGHT - 1 : 0;
-    xdelta = dx == 1 ? -1 : 1;
-    ydelta = dy == 1 ? -1 : 1;
-    tasks = []
+    const dx = DIR2DELTA[newDirection][0];
+    const dy = DIR2DELTA[newDirection][1];
+    const xStart = dx == 1 ? WIDTH - 1 : 0;
+    const yStart = dy == 1 ? HEIGHT - 1 : 0;
+    const xdelta = dx == 1 ? -1 : 1;
+    const ydelta = dy == 1 ? -1 : 1;
+    const tasks = []
     for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
             if (values[i][j]) {
@@ -364,8 +364,8 @@ function firstAvailableMove(currentBoard){
 function updateColor(x, j, newColor, number) {
     state.values[x][j] = number;
 
-    g = document.getElementsByClassName('grid')[0];
-    c = g.children[x];
+    const g = document.getElementsByClassName('grid')[0];
+    const c = g.children[x];
     c.children[j].className = 'circle ' + newColor;
 
 }
@@ -379,17 +379,17 @@ async function reset() {
     state.boardBlank = true;
     state.dir = SOUTH;
     state.player = 1;
-    controls = document.getElementsByClassName('controls')[0];
+    const controls = document.getElementsByClassName('controls')[0];
     controls.className = 'controls yellow';
     for (let child of controls.children) {
         child.className = 'arrow white';
     }
-    indicator = document.getElementById('indicator');
+    const indicator = document.getElementById('indicator');
     indicator.className = 'circle yellow';
     state.controlsAvailable = true;
     await rotateAllTo(0, 0);
     state.gameOver = false;
-    game_over_message = document.getElementById('gameover')
+    const game_over_message = document.getElementById('gameover')
     console.log(game_over_message)
     try {
         document.getElementsByClassName('before-board')[0].removeChild(document.getElementById('gameover'));
@@ -399,20 +399,20 @@ async function reset() {
 }
 
 function updateControlAvailability(boardPressed) {
-    shading = 'gray'
+    let shading = 'gray'
     if (boardPressed) {
         shading = 'white';
-        indicator = document.getElementById('indicator');
+        const indicator = document.getElementById('indicator');
         indicator.className = 'circle ' + COLORS[state.player];
     }
-    c = document.getElementsByClassName('controls')[0];
+    const c = document.getElementsByClassName('controls')[0];
     c.className = 'controls ' + COLORS[state.player];
-    buttons = c.children;
+    const buttons = c.children;
     for (let j = 0; j < 9; ++j) {
 
-        button = buttons[j]
+        const button = buttons[j]
         button.className = "arrow " + shading;
-        resetIndex = 4;
+        const resetIndex = 4;
         if (j == resetIndex && !boardPressed) {
             button.className = "arrow white";
         }
@@ -421,22 +421,53 @@ function updateControlAvailability(boardPressed) {
 }
 
 function addButtonsToBoard() {
+    // provide binding for the opponent toggle
+    const toggle = document.getElementById('setOpponent');
+    toggle.onchange = (event) => setOpponent(event.target.value);
+    
+    // add the connect 4 board
     const g = document.getElementsByClassName('grid')[0];
     let col;
-    let element;
+    let childElement;
     for (let i = 0; i < WIDTH; ++i) {
         col = document.createElement('div');
         col.className = 'col';
         state.values.push([])
         for (let j = 0; j < HEIGHT; ++j) {
-            element = document.createElement("div");
-            element.className = 'circle ' + COLORS[0];
-            element.addEventListener("click", onClickBoard(i, j));
-            col.appendChild(element);
+            childElement = document.createElement("div");
+            childElement.className = 'circle ' + COLORS[0];
+            childElement.addEventListener("click", onClickBoard(i, j));
+            col.appendChild(childElement);
             state.values[i].push(0);
         }
         g.appendChild(col);
     }
+    // add the rotation and reset controls
+    const control = document.getElementsByClassName('controls')[0];
+    const styles = ["rotate:225deg", "rotate:270deg", "rotate:315deg", "rotate:180deg", "rotate:0deg","rotate:135deg", "rotate:90deg", "rotate:45deg"];
+    for (let i = 0; i < 4; ++i){
+        addDirectionArrow(control,styles[i], directions[i]);
+    }
+    childElement = document.createElement('div');
+    childElement.id = "center1";
+    childElement.className = "arrow white";
+    childElement.onclick = reset;
+    const gchild = document.createElement('img');
+    gchild.className = 'rotate';
+    gchild.src = "./arrow-rotate.svg";
+    childElement.appendChild(gchild);
+    control.appendChild(childElement);
+    for (let i = 4; i < 8; ++i){
+        addDirectionArrow(control,styles[i], directions[i]);
+    }
+}
+function addDirectionArrow(parent, styleString, dirString){
+    const childElement = document.createElement('img');
+    childElement.src = "arrow-right.svg";
+    childElement.style = styleString;
+    childElement.className = "arrow white";
+    childElement.onclick = () => rotateTo(dirString);
+    parent.appendChild(childElement);
 }
 
 async function rotateTo(newDir) {
@@ -453,13 +484,13 @@ async function rotateTo(newDir) {
     }
 }
 async function moveTowards() {
-    dx = DIR2DELTA[state.dir][0];
-    dy = DIR2DELTA[state.dir][1];
-    xStart = dx == 1 ? WIDTH - 1 : 0;
-    yStart = dy == 1 ? HEIGHT - 1 : 0;
-    xdelta = dx == 1 ? -1 : 1;
-    ydelta = dy == 1 ? -1 : 1;
-    tasks = []
+    const dx = DIR2DELTA[state.dir][0];
+    const dy = DIR2DELTA[state.dir][1];
+    const xStart = dx == 1 ? WIDTH - 1 : 0;
+    const yStart = dy == 1 ? HEIGHT - 1 : 0;
+    const xdelta = dx == 1 ? -1 : 1;
+    const ydelta = dy == 1 ? -1 : 1;
+    const tasks = []
     for (let i = xStart; i * xdelta < WIDTH - xStart; i += xdelta) {
         for (let j = yStart; j * ydelta < HEIGHT - yStart; j += ydelta) {
             if (state.values[i][j]) {
@@ -477,7 +508,7 @@ async function whenAllDone(tasks){
 }
 
 function checkForEndOfGame(){
-    winners = isGameOver(state.values);
+    const winners = isGameOver(state.values);
     if (winners.length == 0){
         return
     }
@@ -487,7 +518,7 @@ function checkForEndOfGame(){
     } else if (winners.length == 1){
         message = COLORS[winners[0]] + ' wins!'
     }
-    m = document.createElement('h1');
+    const m = document.createElement('h1');
     m.id = 'gameover';
     m.appendChild(document.createTextNode(message));
     document.getElementsByClassName('before-board')[0].appendChild(m);
@@ -495,11 +526,11 @@ function checkForEndOfGame(){
 }
 // pure
 function isGameOver(boardArray) {
-    byVert = wonByTower(boardArray);
-    byHoriz = wonByWall(boardArray);
-    diagUp = wonByDiagUp(boardArray);
-    diagDown = wonByDiagDown(boardArray);
-    hasWon = []
+    const byVert = wonByTower(boardArray);
+    const byHoriz = wonByWall(boardArray);
+    const diagUp = wonByDiagUp(boardArray);
+    const diagDown = wonByDiagDown(boardArray);
+    const hasWon = []
     for (let player of [1,2]){
         if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
             hasWon.push(player)
@@ -523,13 +554,13 @@ function noMoreSpace(boardArray){
 }
 // pure
 function wonByTower(boardArray) {
-    let winners = [];
-    width = boardArray.length;
-    height = boardArray[0].length;
+    const winners = [];
+    const width = boardArray.length;
+    const height = boardArray[0].length;
     for (let i = 0; i < width; ++i) {
-        j = 0;
+        let j = 0;
         while (j < height - 3) {
-            v = boardArray[i][j];
+            const v = boardArray[i][j];
             if (v == 0) {
                 j += 1;
                 continue;
@@ -553,12 +584,12 @@ function wonByTower(boardArray) {
 // pure
 function wonByWall(boardArray) {
     let winners = [];
-    width = boardArray.length;
-    height = boardArray[0].length;
+    const width = boardArray.length;
+    const height = boardArray[0].length;
     for (let j = 0; j < height; ++j) {
-        i = 0;
+        let i = 0;
         while (i < width - 3) {
-            v = boardArray[i][j];
+            const v = boardArray[i][j];
             if (v == 0) {
                 i += 1;
                 continue;
@@ -582,15 +613,15 @@ function wonByWall(boardArray) {
 // pure
 function wonByDiagUp(boardArray) {
     let winners = [];
-    width = boardArray.length;
-    height = boardArray[0].length;
+    const width = boardArray.length;
+    const height = boardArray[0].length;
     for(let i = 0; i < width-3; ++i){
         for(let j = 0; j < height-3; ++j){
-            v = boardArray[i][j];
+            const v = boardArray[i][j];
             if (v == 0){
                 continue;
             }
-            allEqual = true;
+            let allEqual = true;
             for(let k = 1; k < 4; ++k){
                 if (v != boardArray[i+k][j+k]){
                     allEqual = false;
@@ -611,7 +642,7 @@ function wonByDiagDown(boardArray) {
     const height = boardArray[0].length;
     for(let i = 0; i < width-3; ++i){
         for(let j = height - 1; j >2; --j){
-            v = boardArray[i][j];
+            const v = boardArray[i][j];
             if (v == 0){
                 continue;
             }
@@ -631,7 +662,7 @@ function wonByDiagDown(boardArray) {
 }
 
 function getAllColumnSeeds(dimension0, dimension1){
-    result = {};
+    let result = {};
     for(let direction of directions){
         let seeds = [];
         for(let i = 0; i < dimension0; ++i){

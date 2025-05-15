@@ -2,12 +2,11 @@
 
 <head>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js">
-    </script>
+    <script type="module" src="script.js"></script>
 </head>
 
 <body>
-    <select type="radio" onchange="setOpponent(event.target.value)" id="opponent">
+    <select id="setOpponent" type="radio" id="opponent">
         <option value="human">Play Human</option>
         <option value="Computer0">Computer Level 0</option>
         <option value="Computer1">Computer Level 1</option>
@@ -29,17 +28,6 @@
                 <div id="indicator" class='circle yellow'></div>
             </div>
             <div class="controls yellow">
-                <img src="arrow-right.svg" style="rotate:225deg" class="arrow white" onclick="rotateTo('NW')"></img>
-                <img src="arrow-right.svg" style="rotate:270deg" class="arrow white" onclick="rotateTo('N')"> </img>
-                <img src="arrow-right.svg" style="rotate:315deg" class="arrow white" onclick="rotateTo('NE')"></img>
-                <img src="arrow-right.svg" style="rotate:180deg" class="arrow white" onclick="rotateTo('W')"></img>
-                <div id="center1" class="arrow white" onclick="reset()">
-                    <img class='rotate' src="./arrow-rotate.svg"></img>
-                </div>
-                <img src="arrow-right.svg" class="arrow white" onclick="rotateTo('E')"></img>
-                <img src="arrow-right.svg" style="rotate:135deg" class="arrow white" onClick="rotateTo('SW')"></img>
-                <img src="arrow-right.svg" style="rotate:90deg" class="arrow white" onclick="rotateTo('S')"> </img>
-                <img src="arrow-right.svg" style="rotate:45deg" class="arrow white" onClick="rotateTo('SE')"></img>
             </div>
         </div>
     </div>

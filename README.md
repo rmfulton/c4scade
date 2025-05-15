@@ -22,3 +22,8 @@ Visit [c4scade.com](https://c4scade.com) to play.
 
 ## COMPLETED FEATURES
 - make a Computer Player DONE
+
+# RUN LOCALLY:
+```sh
+http-server
+```
