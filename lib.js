@@ -137,3 +137,8 @@ export function noMoreSpace(boardArray){
     }
     return true;
 }
+
+//pure
+export function getOtherPlayer(current_player){
+    return 3 - current_player;
+}
