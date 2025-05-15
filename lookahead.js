@@ -20,7 +20,7 @@ export function computerMove(currentBoard, current_dir, playerTurn, depth){
         if ( intArrayEquals(result, [playerTurn])){
             printThinkingTime(t);
             console.log("found a forced win");
-            return [direction,firstAvailableMove(currentBoard, width, height), current]
+            return [direction,firstAvailableMove(currentBoard, width, height)]
         }
         else if (intArrayEquals(result, [getOtherPlayer(playerTurn)])){
             continue;
