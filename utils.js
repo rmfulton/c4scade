@@ -20,3 +20,13 @@ export function intArrayEquals(a,b){
 export function min(a, b) {
     return a < b ? a : b;
 }
+
+export function logBoard(board){
+    for (let row of board){
+        let s = "";
+        for (let entry of row){
+            s += `${entry} `;
+        }
+        console.log(s);
+    }
+}

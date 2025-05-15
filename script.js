@@ -1,4 +1,4 @@
-import { inBounds, min } from './utils.js';
+import { inBounds, logBoard, min } from './utils.js';
 import { COLORS,SOUTH,NORTH,EAST,WEST,NW,SW,NE,SE,DIRECTIONS,DIR2DELTA, DIR2ROT,WAIT,WIDTH,HEIGHT} from './constants.js';
 import { isGameOver, getOtherPlayer } from './lib.js';
 import { computerMove } from './lookahead.js';
@@ -30,6 +30,8 @@ function onClickBoard(x, y) {
         await playAt(x, y);
         if (config.PLAY_COMPUTER && !state.gameOver){
             state.updating = true;
+            logBoard(state.values);
+            console.log(`dir: ${state.dir}, player: ${state.player}, depth: ${config.SEARCH_DEPTH}`);
             const computerAction = computerMove(state.values, state.dir, state.player, config.SEARCH_DEPTH);
             const newDir = computerAction[0];
             const newCoords = computerAction[1];
