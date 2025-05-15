@@ -1,4 +1,4 @@
-import { noMoreSpace, wonByTower } from './lib.js';
+import { isGameOver } from './lib.js';
 const COLORS = ["nocolor", "yellow", "red"]
 const SOUTH = "S";
 const NORTH = "N";
@@ -28,8 +28,6 @@ const config = {
     PLAY_COMPUTER: false,
     SEARCH_DEPTH: 3
 }
-
-let memo = {};
 
 function delay(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds); });
@@ -521,102 +519,6 @@ function checkForEndOfGame(){
     m.appendChild(document.createTextNode(message));
     document.getElementsByClassName('before-board')[0].appendChild(m);
     state.gameOver = true;
-}
-// pure
-function isGameOver(boardArray) {
-    const byVert = wonByTower(boardArray);
-    const byHoriz = wonByWall(boardArray);
-    const diagUp = wonByDiagUp(boardArray);
-    const diagDown = wonByDiagDown(boardArray);
-    let hasWon = []
-    for (let player of [1,2]){
-        if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
-            hasWon.push(player)
-        } 
-    }
-    if (hasWon.length == 0 && noMoreSpace(boardArray)){
-        hasWon = [1,2];
-    }
-    return hasWon
-}
-// pure
-function wonByWall(boardArray) {
-    let winners = [];
-    const width = boardArray.length;
-    const height = boardArray[0].length;
-    for (let j = 0; j < height; ++j) {
-        let i = 0;
-        while (i < width - 3) {
-            const v = boardArray[i][j];
-            if (v == 0) {
-                i += 1;
-                continue;
-            }
-            let allEqual = true;
-            for (let k = 1; k < 4; ++k) {
-                if (v != boardArray[i+k][j]) {
-                    i += k
-                    allEqual = false;
-                    break;
-                }
-            }
-            if (allEqual && !(winners.includes(v))) {
-                winners.push(v);
-                i += 4
-            }
-        }
-    }
-    return winners;
-}
-// pure
-function wonByDiagUp(boardArray) {
-    let winners = [];
-    const width = boardArray.length;
-    const height = boardArray[0].length;
-    for(let i = 0; i < width-3; ++i){
-        for(let j = 0; j < height-3; ++j){
-            const v = boardArray[i][j];
-            if (v == 0){
-                continue;
-            }
-            let allEqual = true;
-            for(let k = 1; k < 4; ++k){
-                if (v != boardArray[i+k][j+k]){
-                    allEqual = false;
-                    break;
-                }
-            }
-            if (allEqual && !(winners.includes(v))) {
-                winners.push(v);
-            }
-        }
-    }
-    return winners;
-}
-// pure
-function wonByDiagDown(boardArray) {
-    let winners = [];
-    const width = boardArray.length;
-    const height = boardArray[0].length;
-    for(let i = 0; i < width-3; ++i){
-        for(let j = height - 1; j >2; --j){
-            const v = boardArray[i][j];
-            if (v == 0){
-                continue;
-            }
-            let allEqual = true;
-            for(let k = 1; k < 4; ++k){
-                if (v != boardArray[i+k][j-k]){
-                    allEqual = false;
-                    break;
-                }
-            }
-            if (allEqual && !(winners.includes(v))) {
-                winners.push(v);
-            }
-        }
-    }
-    return winners;
 }
 
 function getAllColumnSeeds(dimension0, dimension1){
