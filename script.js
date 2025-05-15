@@ -1,4 +1,4 @@
-// import { noMoreSpace } from './lib.js';
+import { noMoreSpace, wonByTower } from './lib.js';
 const COLORS = ["nocolor", "yellow", "red"]
 const SOUTH = "S";
 const NORTH = "N";
@@ -530,7 +530,7 @@ function isGameOver(boardArray) {
     const byHoriz = wonByWall(boardArray);
     const diagUp = wonByDiagUp(boardArray);
     const diagDown = wonByDiagDown(boardArray);
-    const hasWon = []
+    let hasWon = []
     for (let player of [1,2]){
         if ((byVert.includes(player)) || (byHoriz.includes(player)) || (diagUp.includes(player)) || diagDown.includes(player)) {
             hasWon.push(player)
@@ -540,46 +540,6 @@ function isGameOver(boardArray) {
         hasWon = [1,2];
     }
     return hasWon
-}
-// pure
-function noMoreSpace(boardArray){
-    for (let a of boardArray){
-        for (let b of a){
-            if (b == 0){
-                return false
-            }
-        }
-    }
-    return true;
-}
-// pure
-function wonByTower(boardArray) {
-    const winners = [];
-    const width = boardArray.length;
-    const height = boardArray[0].length;
-    for (let i = 0; i < width; ++i) {
-        let j = 0;
-        while (j < height - 3) {
-            const v = boardArray[i][j];
-            if (v == 0) {
-                j += 1;
-                continue;
-            }
-            let allEqual = true;
-            for (let k = 1; k < 4; ++k) {
-                if (v != boardArray[i][j + k]) {
-                    j += k
-                    allEqual = false;
-                    break;
-                }
-            }
-            if (allEqual && !(winners.includes(v))) {
-                winners.push(v);
-                j += 4;
-            }
-        }
-    }
-    return winners;
 }
 // pure
 function wonByWall(boardArray) {
