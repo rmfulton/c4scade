@@ -7,6 +7,7 @@ Visit [c4scade.com](https://c4scade.com) to play.
 - provide a signal to the user that the computer is "thinking".🤔
     - provide a signal that the computer thinks it has won: 😈 😎 😍 🥳 🤫
     - provide a signal that the computer thinks it has lost : 😞 🥶 🤬 🙈 🫣
+- record the sequence of moves for debugging
 - allow a user to "undo" an accidental series of moves
 - make a Neural Network (how?)
 - make a mobile app

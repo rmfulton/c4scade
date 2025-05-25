@@ -10,6 +10,7 @@ let state = {
     controlsAvailable: true,
     gameOver: false,
     boardBlank: true,
+    moveSequence: [],
 }
 const config = {
     PLAY_COMPUTER: false,
@@ -30,8 +31,7 @@ function onClickBoard(x, y) {
         await playAt(x, y);
         if (config.PLAY_COMPUTER && !state.gameOver){
             state.updating = true;
-            logBoard(state.values);
-            console.log(`dir: ${state.dir}, player: ${state.player}, depth: ${config.SEARCH_DEPTH}`);
+            printMoveSequence();
             const computerAction = computerMove(state.values, state.dir, state.player, config.SEARCH_DEPTH);
             const newDir = computerAction[0];
             const newCoords = computerAction[1];
@@ -69,6 +69,7 @@ async function playAt(x, y) {
     const coordinates = getStartingLocation(x,y,state.dir);
     x = coordinates[0];
     y = coordinates[2];
+    state.moveSequence.push([x,y]);
     const dx = coordinates[1];
     const dy = coordinates[3];
     await playPiece(x,y,dx,dy);
@@ -143,7 +144,6 @@ function updateColor(x, j, newColor, number) {
     c.children[j].className = 'circle ' + newColor;
 
 }
-
 async function reset() {
     for (let i = 0; i < WIDTH; ++i) {
         for (let j = 0; j < HEIGHT; ++j) {
@@ -153,6 +153,7 @@ async function reset() {
     state.boardBlank = true;
     state.dir = SOUTH;
     state.player = 1;
+    state.moveSequence = [];
     const controls = document.getElementsByClassName('controls')[0];
     controls.className = 'controls yellow';
     for (let child of controls.children) {
@@ -198,6 +199,9 @@ function addButtonsToBoard() {
     // provide binding for the opponent toggle
     const toggle = document.getElementById('setOpponent');
     toggle.onchange = (event) => setOpponent(event.target.value);
+    // log move history
+    const logger = document.getElementById('logHistory');
+    logger.onclick = (event) => printMoveSequence(); 
     
     // add the connect 4 board
     const g = document.getElementsByClassName('grid')[0];
@@ -249,6 +253,7 @@ async function rotateTo(newDir) {
         return;
     }
     state.dir = newDir;
+    state.moveSequence.push(newDir);
     updateControlAvailability(false);
     await rotateAllTo(DIR2ROT[newDir]);
     await moveTowards();
@@ -344,6 +349,24 @@ async function rotateAllTo(angle, time = 1) {
     // these happen concurrently
     animateRotation(b, d_angle, time);
     await animateRotation(c, d_angle, time);
+}
+
+function printMoveSequence(){
+    let s = "";
+    for (let element of state.moveSequence){
+        let isDirection = false;
+        for(let d of DIRECTIONS){
+            if (element == d){
+                s += element + ", ";
+                isDirection = true;
+                break;
+            }
+        }
+        if (!isDirection) {
+            s += `(${element[0]},${element[1]}), `;
+        }
+    }
+    console.log(s);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
