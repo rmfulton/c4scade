@@ -70,6 +70,7 @@ async function playAt(x, y) {
     x = coordinates[0];
     y = coordinates[2];
     state.moveSequence.push([x,y]);
+    updateDisplayedMove();
     const dx = coordinates[1];
     const dy = coordinates[3];
     await playPiece(x,y,dx,dy);
@@ -154,6 +155,7 @@ async function reset() {
     state.dir = SOUTH;
     state.player = 1;
     state.moveSequence = [];
+    updateDisplayedMove();
     const controls = document.getElementsByClassName('controls')[0];
     controls.className = 'controls yellow';
     for (let child of controls.children) {
@@ -200,8 +202,8 @@ function addButtonsToBoard() {
     const toggle = document.getElementById('setOpponent');
     toggle.onchange = (event) => setOpponent(event.target.value);
     // log move history
-    const logger = document.getElementById('logHistory');
-    logger.onclick = (event) => printMoveSequence(); 
+    const logger = document.getElementById('showMoveHistory');
+    logger.onclick = (event) => toggleMoveSequenceDisplay(); 
     
     // add the connect 4 board
     const g = document.getElementsByClassName('grid')[0];
@@ -254,6 +256,7 @@ async function rotateTo(newDir) {
     }
     state.dir = newDir;
     state.moveSequence.push(newDir);
+    updateDisplayedMove();
     updateControlAvailability(false);
     await rotateAllTo(DIR2ROT[newDir]);
     await moveTowards();
@@ -351,7 +354,7 @@ async function rotateAllTo(angle, time = 1) {
     await animateRotation(c, d_angle, time);
 }
 
-function printMoveSequence(){
+function getMoveString(){
     let s = "";
     for (let element of state.moveSequence){
         let isDirection = false;
@@ -366,7 +369,27 @@ function printMoveSequence(){
             s += `(${element[0]},${element[1]}), `;
         }
     }
-    console.log(s);
+    return s;
+}
+function printMoveSequence(){
+    console.log(getMoveString());
+}
+
+function updateDisplayedMove(){
+    let x = document.getElementById("moveHistory");
+    x.textContent = getMoveString();
+}
+
+function toggleMoveSequenceDisplay(){
+    let toggle= document.getElementById("showMoveHistory");
+    let display = document.getElementById("moveHistory");
+    if (display.style.visibility == "hidden"){
+        display.style = "";
+        toggle.textContent = "Hide Move History";
+    } else {
+        display.style.visibility = "hidden";
+        toggle.textContent = "Show Move History";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
